@@ -1,0 +1,36 @@
+{
+  "servers": {
+    "localhost": {
+      "hardcore": false,
+      "gamemode": 1,
+      "worlds": [
+        "minecraft:overworld",
+        "minecraft:the_nether",
+        "minecraft:the_end"
+      ],
+      "hashedSeed": 7631614983690546767,
+      "difficulty": 1,
+      "joinTime": "2022-11-16 13:28:41.981847",
+      "tablist": [
+        {
+          "uuid": "3632330d-3737-4270-8e8f-270e581c45db",
+          "name": "Admin_Else",
+          "properties": [
+            {
+              "name": "textures",
+              "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2ODYwMTcyMTYyMSwKICAicHJvZmlsZUlkIiA6ICIzNjMyMzMwZDM3Mzc0MjcwOGU4ZjI3MGU1ODFjNDVkYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBZG1pbl9FbHNlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I5ZmU0MDgyNTNmYmFjNmNmZDVjYzY1MmU5YjIwODA0ZmE3OGEzODBmOWJiMWRkNTdhMDkwNzk4MGMxMmM2NzMiCiAgICB9LAogICAgIkNBUEUiIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzIzNDBjMGUwM2RkMjRhMTFiMTVhOGIzM2MyYTdlOWUzMmFiYjIwNTFiMjQ4MWQwYmE3ZGVmZDYzNWNhN2E5MzMiCiAgICB9CiAgfQp9",
+              "signature": "d3n55F5ERy7ntLBWQ2tHR6z46/7+ir03ApD8nQwDE7LaC89cturR0S7ItDnpQL6tqq4OPwNmvUsh1qO/DhUVPFfpS7NbKpGHPP5tn92RBfvtHH02rkMPcE1sijQbe0wG25TBWQPH18EbYTQP19+t09IK27NYNzwO5o/c52RyCDdrRHQOp9mMRutGH5Ea/KqXeuyUN9dIf2JcWWpjTAEqjgiTSuVKsnDm45mL4rRYPipfGA3+wyaxP4iAKvaOXPHUhs+mpfTgfm7czGH25eIaG9P2TAVIRUwdVNpwKYHxlhTFszu3ECLSpPTJmltwx478scstzXQek9Jqwhhfws7s9EXoaP/AoTMDssbolvYPvgFBsM6duuLTq/58GK2Ioz3Y+2MMjdIcK0LsGHqt+bp/jSO+lkhub49oO0850m46F+X6PmLS1+fGpNKPIFby3hOQHWeuyPCk6DXcsCTbIZ9ljNB8pfSCvyNUjn6hRXRJ/Wi7TMHkxPXLc0lnzIfj/zOvo1Zz0ytq/nbfzR0a5c30edas58kkZpl1e3FQcZIeyYMQqJhSYP3kJRR+i/yCtWCRoEmcZVoTD8ZKcFYUX22Zr0FU6JDZYfTWhYW8ggvHxfIhTU+8Sjo2De0cvHbfnw2gy6F81gaD7gr5Lpk5R/3D6jiV7tOHzrfJJe3cfq5iHJE="
+            }
+          ],
+          "gamemode": 1,
+          "ping": 0,
+          "display_name": null,
+          "timestamp": null,
+          "public_key": null,
+          "key_signature": null
+        }
+      ],
+      "offlineMode": false
+    }
+  }
+}

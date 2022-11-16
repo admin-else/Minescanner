@@ -148,7 +148,7 @@ class ChatLoggerFactory(ClientFactory):
 def run(args):
     # Log in
     #profile = yield ProfileCLI.make_profile(args)
-    profile = yield Profile.from_token('','eyJhbGciOiJIUzI1NiJ9.eyJ4dWlkIjoiMjUzNTQwODczNjU4Mzg2NyIsImFnZyI6IkFkdWx0Iiwic3ViIjoiZmFjYWQ2NjYtNGFiYS00MDU3LTlmOWQtMzQ5NDI2NDQ2MzAzIiwibmJmIjoxNjY4NTExOTE4LCJhdXRoIjoiWEJPWCIsInJvbGVzIjpbXSwiaXNzIjoiYXV0aGVudGljYXRpb24iLCJleHAiOjE2Njg1OTgzMTgsImlhdCI6MTY2ODUxMTkxOCwicGxhdGZvcm0iOiJVTktOT1dOIiwieXVpZCI6ImRhYjRkNGQyZjA1NzQ3YWNmMTg5YTFlNTE1MDM5ZGNkIn0.ZapS4J_x2TXTsmjYn1zoTI9AKXIUDOhf1aPE9_XvOuQ','Admin_Else','3632330d373742708e8f270e581c45db')
+    profile = yield Profile.from_token('',open('../token.txt','r').read().rstrip(),'Admin_Else','3632330d373742708e8f270e581c45db') # U wont get my accses token (;
 
     # Create factory
     factory = ChatLoggerFactory(profile)

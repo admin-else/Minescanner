@@ -3,12 +3,16 @@ from bs4 import BeautifulSoup
 import socket
 import os
 import subprocess
+import multiprocessing
+from multiprocessing.pool import ThreadPool
+import concurrent.futures
 
 websiteAddresses = []
 pingedAddresses = []
 dupelicateaddress = []
 succsesfullpings = []
 masscanedips = []
+stopscraping = False
 
 f = open('ips.txt', 'w')
 
@@ -21,64 +25,46 @@ def masscan(ip):
         masscanedips.append(host.get('addr'))
 
 
-def tcpping():
-    i = 0
-    print("Pinging Servers")
-    for ip in websiteAddresses:
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.settimeout(0.05)
-        try:
-            if client.connect_ex((ip, 25565)) == 0:
-                ip = socket.gethostbyname(ip)
-                ipParts = str(ip).split('.')
-                iprange = f"{ipParts[0]}.{ipParts[1]}.{ipParts[2]}"
-                if iprange not in pingedAddresses:
-                    pingedAddresses.append(iprange)
-                else: 
-                    if iprange not in dupelicateaddress:
-                        dupelicateaddress.append(iprange)
-        except:
-            pass
-        i+=1
-        if(i%10==0):
-            print("{}% Done...".format(round(i/len(websiteAddresses)*100,2)))
-    print(f"done! pinged {len(websiteAddresses)} servers!")
+def tcpping(ip):
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.settimeout(0.05)
+    try:
+        if client.connect_ex((ip, 25565)) == 0:
+            ip = socket.gethostbyname(ip)
+            ipParts = str(ip).split('.')
+            return f"{ipParts[0]}.{ipParts[1]}.{ipParts[2]}"
+    except:
+        pass
 
-def scaper1():
-    print("Started scrapeing topg.org!")
-    i = 1
-    while True:
-        url = 'https://topg.org/minecraft-servers/page/{}'.format(i)
-        r = requests.get(url, allow_redirects=True)
-        soup = BeautifulSoup(r.content, 'lxml')
-        ips = soup.find_all('div', class_="server-ip")
-        if(len(ips)==0):
-            print("Scraped {} pages of topg.org!!!".format(i))
-            break
-        for ip in ips:
-            if not(websiteAddresses.__contains__(ip.span.text)):
-                websiteAddresses.append(ip.span.text)
-        print("{}% Done...".format(round(i/57*100,1)))
-        i +=1
-def scaper2():
-    i = 1
-    print("Started scrapeing minecraft-server-list.com!")
-    while True: 
-        url = 'https://minecraft-server-list.com/page/{}/'.format(i)
-        r = requests.get(url, allow_redirects=True)
-        soup = BeautifulSoup(r.content, 'lxml')
-        tags = soup.find_all('div', class_="adressen online")
-        if(len(tags)==0):            
-            print("Scraped {} pages of minecraft-server-list.com!!!".format(i))
-            break
-        for tag in tags:
-            websiteAddresses.append(tag.text)
-        print("{}% Done...".format(round(i/237*100,1)))
-        i+=1
 
+def scaper2(i):
+    r = requests.get(f'https://minecraft-server-list.com/page/{i}/')
+    soup = BeautifulSoup(r.content, 'lxml')
+    tags = soup.find_all('div', class_="adressen online")
+    addrslist = []
+    for tag in tags:
+        addrslist.append(tag.text)
+    return addrslist
 
 if __name__=='__main__':
-    scaper2()
+    addrslist = []
+    iprages = []
+    lastpage = int(str(BeautifulSoup(requests.get('https://minecraft-server-list.com/').content,'lxml').find('a', string='>>').get('href')).split('/')[2])
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for list in executor.map(scaper2, range(1, lastpage)):
+            if list!=None:
+                addrslist=addrslist+list
+    addrslist = list(dict.fromkeys(addrslist))
+    print('done downloading ips')
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for range in executor.map(tcpping, addrslist):
+            iprages.append(range)
+    iprages = list(dict.fromkeys(iprages))
+    
+        
+
+
+    exit()
     tcpping()
     i = 1
     for ip in dupelicateaddress:
