@@ -6,4 +6,4 @@ import subprocess
 import multiprocessing
 
 
-print(open('../token.txt','r').read().rstrip())
+subprocess.run(['python3','/home/simon/src/python/minescaner/pinger.py','asda'], timeout=2)

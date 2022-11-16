@@ -23,6 +23,10 @@ class ServerInfoProtocol(SpawningClientProtocol):
         jsoninfo['tablist']=self.players
         reactor.stop()
 
+    def packet_player_list_header_footer(self, buff):
+        jsoninfo['tablistheader']=buff.unpack_string()
+        jsoninfo['tablistfooter']=buff.unpack_string()
+
     def packet_player_list_item(self, buff):
         # 1.7.x
         if self.protocol_version <= 5:
@@ -166,7 +170,7 @@ def main(argv):
 
     run(args)
     reactor.run()
-    if jsoninfo['tablist'][0]['uuid']==str(uuid.UUID.from_offline_player(jsoninfo['tablist'][0]['name'])):
+    if jsoninfo['tablist']!= None and jsoninfo['tablist'][0]['uuid']==str(uuid.UUID.from_offline_player(jsoninfo['tablist'][0]['name'])):
         jsoninfo['offlineMode']=True
     else:
         jsoninfo['offlineMode']=False
@@ -179,13 +183,13 @@ def getByUUID(list, uuid):
 
 def safe(ip):
     with open('servers.json','r+') as file:
-      # First we load existing data into a dict.
         file_data = json.load(file)
-        # Join new_data with file_data inside emp_details
-        file_data["servers"][ip]=jsoninfo
-        # Sets file's current position at offset.
+        if ip in file_data["servers"].keys():
+            file_data["servers"][ip].append(jsoninfo)
+        else:
+            file_data["servers"][ip] = [jsoninfo]
+        
         file.seek(0)
-        # convert back to json.
         json.dump(file_data, file, indent = 2)
     file.close()
 

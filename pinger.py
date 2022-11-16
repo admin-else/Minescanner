@@ -1,4 +1,3 @@
-from curses import tigetflag
 from twisted.internet import reactor
 from quarry.net.client import ClientFactory, ClientProtocol
 import json
@@ -40,16 +39,21 @@ class PingFactory(ClientFactory):
     protocol_mode_next = "status"
 
 def main(address):
-    ip = str(address)
-    factory = PingFactory()
-    factory.connect(ip, 25565)
-    reactor.run()
+    try:
+        ip = str(address)
+        factory = PingFactory()
+        factory.connect(ip, 25565)
+        reactor.run()
 
-    jsonobj['ip']=ip
-    jsonobj["time"]=str(datetime.datetime.now())
+        jsonobj['ip']=ip
+        jsonobj["time"]=str(datetime.datetime.now())
 
-    if jsonobj['version']['name'] not in garbage:
-        write_json(jsonobj)
+        if jsonobj['version']['name'] not in garbage:
+            write_json(jsonobj)
+        print(ip)
+    except:
+        pass
+
 
 
 if __name__ == "__main__":

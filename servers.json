@@ -1,36 +1,212 @@
 {
-  "servers": {
-    "localhost": {
-      "hardcore": false,
-      "gamemode": 1,
-      "worlds": [
-        "minecraft:overworld",
-        "minecraft:the_nether",
-        "minecraft:the_end"
-      ],
-      "hashedSeed": 7631614983690546767,
-      "difficulty": 1,
-      "joinTime": "2022-11-16 13:28:41.981847",
-      "tablist": [
-        {
-          "uuid": "3632330d-3737-4270-8e8f-270e581c45db",
-          "name": "Admin_Else",
-          "properties": [
-            {
-              "name": "textures",
-              "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2ODYwMTcyMTYyMSwKICAicHJvZmlsZUlkIiA6ICIzNjMyMzMwZDM3Mzc0MjcwOGU4ZjI3MGU1ODFjNDVkYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBZG1pbl9FbHNlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I5ZmU0MDgyNTNmYmFjNmNmZDVjYzY1MmU5YjIwODA0ZmE3OGEzODBmOWJiMWRkNTdhMDkwNzk4MGMxMmM2NzMiCiAgICB9LAogICAgIkNBUEUiIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzIzNDBjMGUwM2RkMjRhMTFiMTVhOGIzM2MyYTdlOWUzMmFiYjIwNTFiMjQ4MWQwYmE3ZGVmZDYzNWNhN2E5MzMiCiAgICB9CiAgfQp9",
-              "signature": "d3n55F5ERy7ntLBWQ2tHR6z46/7+ir03ApD8nQwDE7LaC89cturR0S7ItDnpQL6tqq4OPwNmvUsh1qO/DhUVPFfpS7NbKpGHPP5tn92RBfvtHH02rkMPcE1sijQbe0wG25TBWQPH18EbYTQP19+t09IK27NYNzwO5o/c52RyCDdrRHQOp9mMRutGH5Ea/KqXeuyUN9dIf2JcWWpjTAEqjgiTSuVKsnDm45mL4rRYPipfGA3+wyaxP4iAKvaOXPHUhs+mpfTgfm7czGH25eIaG9P2TAVIRUwdVNpwKYHxlhTFszu3ECLSpPTJmltwx478scstzXQek9Jqwhhfws7s9EXoaP/AoTMDssbolvYPvgFBsM6duuLTq/58GK2Ioz3Y+2MMjdIcK0LsGHqt+bp/jSO+lkhub49oO0850m46F+X6PmLS1+fGpNKPIFby3hOQHWeuyPCk6DXcsCTbIZ9ljNB8pfSCvyNUjn6hRXRJ/Wi7TMHkxPXLc0lnzIfj/zOvo1Zz0ytq/nbfzR0a5c30edas58kkZpl1e3FQcZIeyYMQqJhSYP3kJRR+i/yCtWCRoEmcZVoTD8ZKcFYUX22Zr0FU6JDZYfTWhYW8ggvHxfIhTU+8Sjo2De0cvHbfnw2gy6F81gaD7gr5Lpk5R/3D6jiV7tOHzrfJJe3cfq5iHJE="
-            }
-          ],
-          "gamemode": 1,
-          "ping": 0,
-          "display_name": null,
-          "timestamp": null,
-          "public_key": null,
-          "key_signature": null
-        }
-      ],
-      "offlineMode": false
+  "serverlist": [
+    {
+      "description": "                \u00a7aHypixel Network \u00a7c[1.8-1.19]\n     \u00a73\u00a7lSKYBLOCK 0.16.1 \u00a77- \u00a7b\u00a7lSPIDER'S DEN QoL",
+      "players": {
+        "max": 100000,
+        "online": 37299,
+        "sample": []
+      },
+      "version": {
+        "name": "Requires MC 1.8 / 1.19",
+        "protocol": 760
+      },
+      "ip": "eu.hypixel.net",
+      "time": "2022-11-16 16:28:10.634555"
+    },
+    {
+      "description": "                \u00a7aHypixel Network \u00a7c[1.8-1.19]\n     \u00a73\u00a7lSKYBLOCK 0.16.1 \u00a77- \u00a7b\u00a7lSPIDER'S DEN QoL",
+      "players": {
+        "max": 100000,
+        "online": 37513,
+        "sample": []
+      },
+      "version": {
+        "name": "Requires MC 1.8 / 1.19",
+        "protocol": 760
+      },
+      "ip": "eu.hypixel.net",
+      "time": "2022-11-16 16:33:15.618704"
+    },
+    {
+      "description": "                \u00a7aHypixel Network \u00a7c[1.8-1.19]\n     \u00a73\u00a7lSKYBLOCK 0.16.1 \u00a77- \u00a7b\u00a7lSPIDER'S DEN QoL",
+      "players": {
+        "max": 100000,
+        "online": 37539,
+        "sample": []
+      },
+      "version": {
+        "name": "Requires MC 1.8 / 1.19",
+        "protocol": 760
+      },
+      "ip": "eu.hypixel.net",
+      "time": "2022-11-16 16:33:35.046678"
+    },
+    {
+      "description": {
+        "text": "fuck you tim"
+      },
+      "players": {
+        "max": 20,
+        "online": 0
+      },
+      "version": {
+        "name": "1.16.5",
+        "protocol": 754
+      },
+      "ip": "135.125.212.215",
+      "time": "2022-11-16 16:36:31.434243"
+    },
+    {
+      "description": {
+        "extra": [
+          {
+            "text": "            "
+          },
+          {
+            "strikethrough": true,
+            "color": "white",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "yellow",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "gold",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "red",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "dark_red",
+            "text": "/"
+          },
+          {
+            "color": "white",
+            "text": "  "
+          },
+          {
+            "color": "white",
+            "text": "\u03a8 "
+          },
+          {
+            "bold": true,
+            "color": "yellow",
+            "text": "Sunny"
+          },
+          {
+            "bold": true,
+            "color": "aqua",
+            "text": "World "
+          },
+          {
+            "color": "white",
+            "text": "\u03a8  "
+          },
+          {
+            "strikethrough": true,
+            "color": "dark_red",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "red",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "gold",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "yellow",
+            "text": "/"
+          },
+          {
+            "strikethrough": true,
+            "color": "white",
+            "text": "/"
+          },
+          {
+            "color": "white",
+            "text": "                         "
+          },
+          {
+            "bold": true,
+            "color": "aqua",
+            "text": "[!] "
+          },
+          {
+            "bold": true,
+            "color": "red",
+            "text": "[!] "
+          },
+          {
+            "bold": true,
+            "color": "yellow",
+            "text": "[!] "
+          },
+          {
+            "bold": true,
+            "color": "green",
+            "text": "\u0412\u044b\u0436\u0438\u0432\u0430\u043d\u0438\u0435"
+          },
+          {
+            "bold": true,
+            "color": "dark_gray",
+            "text": ", "
+          },
+          {
+            "bold": true,
+            "color": "green",
+            "text": "\u041c\u0438\u043d\u0438\u0418\u0433\u0440\u044b"
+          },
+          {
+            "bold": true,
+            "color": "dark_gray",
+            "text": ", "
+          },
+          {
+            "bold": true,
+            "color": "green",
+            "text": "\u0421\u043a\u0430\u0439\u0411\u043b\u043e\u043a "
+          },
+          {
+            "bold": true,
+            "color": "yellow",
+            "text": "[!] "
+          },
+          {
+            "bold": true,
+            "color": "red",
+            "text": "[!] "
+          },
+          {
+            "bold": true,
+            "color": "aqua",
+            "text": "[!]"
+          }
+        ],
+        "text": ""
+      },
+      "players": {
+        "max": 948,
+        "online": 0
+      },
+      "version": {
+        "name": "BotFilter 1.8.x-1.19.x",
+        "protocol": 760
+      },
+      "ip": "135.125.212.44",
+      "time": "2022-11-16 16:36:31.436785"
     }
-  }
+  ]
 }
