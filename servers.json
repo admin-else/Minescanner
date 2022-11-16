@@ -1,212 +1,216 @@
 {
   "serverlist": [
     {
-      "description": "                \u00a7aHypixel Network \u00a7c[1.8-1.19]\n     \u00a73\u00a7lSKYBLOCK 0.16.1 \u00a77- \u00a7b\u00a7lSPIDER'S DEN QoL",
+      "description": {
+        "text": "Andy Arbeit"
+      },
       "players": {
-        "max": 100000,
-        "online": 37299,
-        "sample": []
+        "max": 4,
+        "online": 0
       },
       "version": {
-        "name": "Requires MC 1.8 / 1.19",
+        "name": "1.19.2",
         "protocol": 760
       },
-      "ip": "eu.hypixel.net",
-      "time": "2022-11-16 16:28:10.634555"
-    },
-    {
-      "description": "                \u00a7aHypixel Network \u00a7c[1.8-1.19]\n     \u00a73\u00a7lSKYBLOCK 0.16.1 \u00a77- \u00a7b\u00a7lSPIDER'S DEN QoL",
-      "players": {
-        "max": 100000,
-        "online": 37513,
-        "sample": []
-      },
-      "version": {
-        "name": "Requires MC 1.8 / 1.19",
-        "protocol": 760
-      },
-      "ip": "eu.hypixel.net",
-      "time": "2022-11-16 16:33:15.618704"
-    },
-    {
-      "description": "                \u00a7aHypixel Network \u00a7c[1.8-1.19]\n     \u00a73\u00a7lSKYBLOCK 0.16.1 \u00a77- \u00a7b\u00a7lSPIDER'S DEN QoL",
-      "players": {
-        "max": 100000,
-        "online": 37539,
-        "sample": []
-      },
-      "version": {
-        "name": "Requires MC 1.8 / 1.19",
-        "protocol": 760
-      },
-      "ip": "eu.hypixel.net",
-      "time": "2022-11-16 16:33:35.046678"
+      "ip": "176.57.161.179",
+      "time": "2022-11-16 17:21:35.878375"
     },
     {
       "description": {
-        "text": "fuck you tim"
+        "text": "\u00c3\u0084gypan"
       },
       "players": {
-        "max": 20,
+        "max": 4,
+        "online": 0
+      },
+      "version": {
+        "name": "1.19.2",
+        "protocol": 760
+      },
+      "ip": "176.57.161.69",
+      "time": "2022-11-16 17:21:35.880018"
+    },
+    {
+      "description": "Minecraft Server by g-portal.com",
+      "players": {
+        "max": 10,
+        "online": 0
+      },
+      "version": {
+        "name": "1.7.10",
+        "protocol": 5
+      },
+      "ip": "176.57.131.94",
+      "time": "2022-11-16 17:21:35.885545"
+    },
+    {
+      "description": {
+        "text": "A Minecraft Server"
+      },
+      "players": {
+        "max": 10,
+        "online": 1,
+        "sample": [
+          {
+            "id": "5dd0816a-dd1c-4207-ae32-33dd5087156c",
+            "name": "LEJumper"
+          }
+        ]
+      },
+      "version": {
+        "name": "1.19",
+        "protocol": 759
+      },
+      "ip": "45.89.124.36",
+      "time": "2022-11-16 17:21:35.886991"
+    },
+    {
+      "description": {
+        "extra": [
+          {
+            "bold": true,
+            "color": "#fd8e39",
+            "text": "SHLBS "
+          },
+          {
+            "color": "yellow",
+            "text": "[1.19]\n"
+          },
+          {
+            "color": "gray",
+            "text": "ServernHeterLegitBaServern"
+          }
+        ],
+        "text": ""
+      },
+      "players": {
+        "max": 25,
+        "online": 0
+      },
+      "version": {
+        "name": "Paper 1.19.2",
+        "protocol": 760
+      },
+      "ip": "193.70.81.160",
+      "time": "2022-11-16 17:21:35.890820"
+    },
+    {
+      "description": {
+        "text": "Caveopolis"
+      },
+      "players": {
+        "max": 60,
+        "online": 2,
+        "sample": [
+          {
+            "id": "4649bcfc-2322-4939-ac08-47b448bc9b07",
+            "name": "PhantomBuilder1"
+          },
+          {
+            "id": "7bba5af0-653e-46a9-b832-b25a3f67b206",
+            "name": "Creepydan"
+          }
+        ]
+      },
+      "version": {
+        "name": "1.19.2",
+        "protocol": 760
+      },
+      "ip": "88.150.171.22",
+      "time": "2022-11-16 17:21:35.893025"
+    },
+    {
+      "description": {
+        "text": "Minecraft Server by g-portal.com"
+      },
+      "players": {
+        "max": 4,
         "online": 0
       },
       "version": {
         "name": "1.16.5",
         "protocol": 754
       },
-      "ip": "135.125.212.215",
-      "time": "2022-11-16 16:36:31.434243"
+      "ip": "176.57.131.33",
+      "time": "2022-11-16 17:21:35.896232"
     },
     {
       "description": {
         "extra": [
           {
-            "text": "            "
-          },
-          {
-            "strikethrough": true,
-            "color": "white",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "yellow",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "gold",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "red",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "dark_red",
-            "text": "/"
-          },
-          {
-            "color": "white",
-            "text": "  "
-          },
-          {
-            "color": "white",
-            "text": "\u03a8 "
-          },
-          {
-            "bold": true,
-            "color": "yellow",
-            "text": "Sunny"
-          },
-          {
-            "bold": true,
-            "color": "aqua",
-            "text": "World "
-          },
-          {
-            "color": "white",
-            "text": "\u03a8  "
-          },
-          {
-            "strikethrough": true,
-            "color": "dark_red",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "red",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "gold",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "yellow",
-            "text": "/"
-          },
-          {
-            "strikethrough": true,
-            "color": "white",
-            "text": "/"
-          },
-          {
-            "color": "white",
-            "text": "                         "
-          },
-          {
-            "bold": true,
-            "color": "aqua",
-            "text": "[!] "
-          },
-          {
-            "bold": true,
-            "color": "red",
-            "text": "[!] "
-          },
-          {
-            "bold": true,
-            "color": "yellow",
-            "text": "[!] "
-          },
-          {
-            "bold": true,
-            "color": "green",
-            "text": "\u0412\u044b\u0436\u0438\u0432\u0430\u043d\u0438\u0435"
-          },
-          {
-            "bold": true,
-            "color": "dark_gray",
-            "text": ", "
-          },
-          {
-            "bold": true,
-            "color": "green",
-            "text": "\u041c\u0438\u043d\u0438\u0418\u0433\u0440\u044b"
-          },
-          {
-            "bold": true,
-            "color": "dark_gray",
-            "text": ", "
-          },
-          {
-            "bold": true,
-            "color": "green",
-            "text": "\u0421\u043a\u0430\u0439\u0411\u043b\u043e\u043a "
-          },
-          {
-            "bold": true,
-            "color": "yellow",
-            "text": "[!] "
-          },
-          {
-            "bold": true,
-            "color": "red",
-            "text": "[!] "
-          },
-          {
-            "bold": true,
-            "color": "aqua",
-            "text": "[!]"
+            "text": "A Minecraft Server"
           }
         ],
         "text": ""
       },
       "players": {
-        "max": 948,
+        "max": 20,
         "online": 0
       },
       "version": {
-        "name": "BotFilter 1.8.x-1.19.x",
-        "protocol": 760
+        "name": "Paper 1.16.4",
+        "protocol": 754
       },
-      "ip": "135.125.212.44",
-      "time": "2022-11-16 16:36:31.436785"
+      "ip": "88.150.171.91",
+      "time": "2022-11-16 17:21:35.902685"
+    },
+    {
+      "description": {
+        "text": "A Minecraft Server "
+      },
+      "players": {
+        "max": 20,
+        "online": 3,
+        "sample": [
+          {
+            "id": "204197be-ab2c-4c04-a5bc-6d3e1c69652a",
+            "name": "Jessie____"
+          },
+          {
+            "id": "98b20524-9e83-4d36-8477-3237d2c52c73",
+            "name": "Kalliru"
+          },
+          {
+            "id": "3bc49080-d482-42a8-834c-09bdc47588ec",
+            "name": "FragHarry"
+          }
+        ]
+      },
+      "version": {
+        "name": "1.18.2",
+        "protocol": 758
+      },
+      "ip": "51.89.92",
+      "time": "2022-11-16 17:37:24.920761"
+    },
+    {
+      "description": {
+        "text": "A Minecraft Server "
+      },
+      "players": {
+        "max": 20,
+        "online": 3,
+        "sample": [
+          {
+            "id": "98b20524-9e83-4d36-8477-3237d2c52c73",
+            "name": "Kalliru"
+          },
+          {
+            "id": "204197be-ab2c-4c04-a5bc-6d3e1c69652a",
+            "name": "Jessie____"
+          },
+          {
+            "id": "3bc49080-d482-42a8-834c-09bdc47588ec",
+            "name": "FragHarry"
+          }
+        ]
+      },
+      "version": {
+        "name": "1.18.2",
+        "protocol": 758
+      },
+      "ip": "51.89.92",
+      "time": "2022-11-16 17:44:10.485311"
     }
   ]
 }
