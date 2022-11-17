@@ -4,6 +4,8 @@ import socket
 import os
 import subprocess
 import multiprocessing
+import pinger
+import Scraper
+import concurrent.futures
 
-
-subprocess.run(['python3','/home/simon/src/python/minescaner/pinger.py','asda'], timeout=2)
+Scraper.try2ping('mc.hypixel.net')
