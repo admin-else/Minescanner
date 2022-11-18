@@ -8,12 +8,13 @@ ip = ''
 garbage = ['TCPShield.com', 'COSMIC GUARD']
 
 def write_json(new_data):
-    with open('servers.json','r+') as file:
+    with open('servers.json','r') as file:
         file_data = json.load(file)
-        file_data["serverlist"].append(new_data)
-        file.seek(0)
+    
+    file_data["serverlist"].append(new_data)
+
+    with open('servers.json', 'w') as file:
         json.dump(file_data, file, indent = 2)
-        file.close()
 
 class PingProtocol(ClientProtocol):
     def status_response(self, data):

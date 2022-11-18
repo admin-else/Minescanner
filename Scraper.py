@@ -2,19 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import socket
 import os
-import json
 import concurrent.futures
-import pinger
 import subprocess
 from multiprocessing import Pool
-
-def write_jsondata(new_data):
-    with open('servers.json','r+') as file:
-        file_data = json.load(file)
-        file_data["serverlist"]=new_data+file_data["serverlist"]
-        file.seek(0)
-        json.dump(file_data, file, indent = 2)
-        file.close()
 
 def masscan(ipranges):
     lines = []
