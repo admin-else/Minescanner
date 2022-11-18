@@ -8,4 +8,5 @@ import pinger
 import Scraper
 import concurrent.futures
 
-Scraper.try2ping('mc.hypixel.net')
+res = requests.get('https://minecraft-server-list.com/')
+print(res)

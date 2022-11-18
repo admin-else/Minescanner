@@ -7,24 +7,24 @@ import subprocess
 from multiprocessing import Pool
 
 def masscan(ipranges):
-    lines = []
-    for iprange in ipranges:
-        lines.append('range = '+ iprange+'.0-'+iprange+'.255\n')
-    open('./masscan.conf','w').writelines(lines)
-    os.system(f"sudo masscan -c ./masscan.conf -p 25565 --wait=3 --rate 1000 -oL output.txt")
-    lines = open('output.txt', 'r').readlines()
-    ips = []
-    for line in lines:
-        if str(line).startswith('open tcp 25565 '):
-            ips.append(line.split(' ')[3])
-    print(len(ips))
+    lines = [f'range = {iprange}.0-{iprange}.255' for iprange in ipranges]
+    with open('./masscan.conf','w') as f:
+        f.writelines(lines)
+    os.system('sudo masscan -c ./masscan.conf -p 25565 --wait=3 --rate 1000 -oL output.txt')
+    with open('output.txt', 'r') as f:
+        lines = f.readlines()
+    ips = [
+        line.split(' ')[3]
+        for line in lines
+        if line.startswith('open tcp 25565 ')
+    ]
     return ips
 
 def try2ping(ip):
     try:
-        subprocess.run(['python3','/home/simon/src/python/minescaner/pinger.py',ip], timeout=2)
-    except:
-        pass
+        subprocess.run(['python3','./pinger.py',ip], timeout=2)
+    except Exception:
+        print(Exception)
 
 def tcpping(ip):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,11 +32,9 @@ def tcpping(ip):
     try:
         if client.connect_ex((ip, 25565)) == 0:
             ip = socket.gethostbyname(ip)
-            ipParts = str(ip).split('.')
-            return f"{ipParts[0]}.{ipParts[1]}.{ipParts[2]}"
+            return ".".join(str(ip).split(".")[:3])
     except:
         pass
-
 
 def scaper2(i):
     r = requests.get(f'https://minecraft-server-list.com/page/{i}/')
@@ -50,7 +48,10 @@ def scaper2(i):
 if __name__=='__main__':
     addrslist = []
     iprages = []
-    lastpage = int(str(BeautifulSoup(requests.get('https://minecraft-server-list.com/').content,'lxml').find('a', string='>>').get('href')).split('/')[2])
+    res = requests.get('https://minecraft-server-list.com/')
+    if res!='<Response [200]>':
+        raise ConnectionError
+    lastpage = int(str(BeautifulSoup(res.content,'lxml').find('a', string='>>').get('href')).split('/')[2])
     #lastpage = 3
     with concurrent.futures.ProcessPoolExecutor() as executor:
         for ips in executor.map(scaper2, range(1, lastpage)):
@@ -64,8 +65,7 @@ if __name__=='__main__':
                 iprages.append(range)
     print('done pinging ips')
     iplist = masscan(iprages)
-    i = 0
-    for ip in iplist:
+    for i, ip in enumerate(iplist):
         try2ping(ip)
         i+=1
         os.system('clear')

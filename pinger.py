@@ -18,13 +18,9 @@ def write_json(new_data):
 
 class PingProtocol(ClientProtocol):
     def status_response(self, data):
-        for k, v in sorted(data.items()):
-            if(k=='description'):
-                jsonobj["description"]=v
-            if(k=='players'):
-                jsonobj["players"]=v
-            if(k=='version'):
-                jsonobj["version"]=v
+        jsonobj["description"]=data['description']
+        jsonobj["players"]=data['players']
+        jsonobj["version"]=data['version']
         reactor.stop()
 
 class PingFactory(ClientFactory):
@@ -32,24 +28,15 @@ class PingFactory(ClientFactory):
     protocol_mode_next = "status"
 
 def main(address):
-    from twisted.internet import reactor
-    from quarry.net.client import ClientFactory, ClientProtocol
-    import json
-    import datetime
-    
-
     ip = str(address)
     factory = PingFactory()
     factory.connect(ip, 25565)
     reactor.run()
             
-
     jsonobj['ip']=ip
     jsonobj["time"]=str(datetime.datetime.now())
     if jsonobj['version']['name'] not in garbage:
         write_json(jsonobj)
-
-
 
 if __name__ == "__main__":
     import sys
