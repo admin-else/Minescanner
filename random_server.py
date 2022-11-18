@@ -7,7 +7,7 @@ file_data = json.load(f)
 ips = []
 for server in file_data['serverlist']:
     try:
-        if server['version']['protocol']==758:
+        if server['version']['protocol']==760:
             ips.append(server['ip'])
     except:
         pass
