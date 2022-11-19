@@ -7,7 +7,7 @@ import subprocess
 from multiprocessing import Pool
 
 def masscan(ipranges):
-    lines = [f'range = {iprange}.0-{iprange}.255' for iprange in ipranges]
+    lines = [f'range = {iprange}.0-{iprange}.255\n' for iprange in ipranges]
     with open('./masscan.conf','w') as f:
         f.writelines(lines)
     os.system('sudo masscan -c ./masscan.conf -p 25565 --wait=3 --rate 1000 -oL output.txt')
@@ -49,7 +49,7 @@ if __name__=='__main__':
     addrslist = []
     iprages = []
     res = requests.get('https://minecraft-server-list.com/')
-    if res!='<Response [200]>':
+    if res.status_code!=200:
         raise ConnectionError
     lastpage = int(str(BeautifulSoup(res.content,'lxml').find('a', string='>>').get('href')).split('/')[2])
     #lastpage = 3
