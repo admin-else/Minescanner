@@ -9,10 +9,8 @@ import datetime
 import argparse
 import json
 
-ip = ''
 jsoninfo = {}
 class ServerInfoProtocol(SpawningClientProtocol):
-    ip = ip
     def setup(self):
         self.players = []
 
@@ -67,17 +65,18 @@ class ServerInfoProtocol(SpawningClientProtocol):
                         p_display_name = str(buff.unpack_chat())
                     else:
                         p_display_name = None
-                    if buff.unpack('?'):
-                        p_sig_timestamp = buff.unpack('l')
-                        p_sig_pub_key = ""
-                        p_sig_key_sig = ""
-                        for k in range(buff.unpack_varint()):
-                            p_sig_pub_key =+buff.unpack('B')
-                        for k in range(buff.unpack_varint()):
-                            p_sig_key_sig =+buff.unpack('B')
+                    if self.protocol_version<=760:
+                        if buff.unpack('?'):
+                            p_sig_timestamp = buff.unpack('l')
+                            p_pub_key = ""
+                            p_sig_key_sig = ""
+                            for k in range(buff.unpack_varint()):
+                                p_pub_key =+buff.unpack('B')
+                            for k in range(buff.unpack_varint()):
+                                p_sig_key_sig =+buff.unpack('B')
                     else:
                         p_sig_timestamp = None
-                        p_sig_pub_key = None
+                        p_pub_key = None
                         p_sig_key_sig = None
                     data = {
                         'uuid': p_uuid,
@@ -87,7 +86,7 @@ class ServerInfoProtocol(SpawningClientProtocol):
                         'ping': p_ping,
                         'display_name': p_display_name,
                         'timestamp': p_sig_timestamp,
-                        'public_key': p_sig_pub_key,
+                        'public_key': p_pub_key,
                         'key_signature': p_sig_key_sig,
                     }
                     if data not in self.players:
@@ -170,7 +169,8 @@ def main(argv):
 
     run(args)
     reactor.run()
-    if jsoninfo['tablist']!= None and jsoninfo['tablist'][0]['uuid']==str(uuid.UUID.from_offline_player(jsoninfo['tablist'][0]['name'])):
+    aPlayer = jsoninfo['tablist'][0]
+    if jsoninfo['tablist']!= None and aPlayer['uuid']==str(uuid.UUID.from_offline_player(aPlayer['name'])):
         jsoninfo['offlineMode']=True
     else:
         jsoninfo['offlineMode']=False
