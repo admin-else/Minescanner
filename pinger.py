@@ -27,7 +27,7 @@ class PingFactory(ClientFactory):
     protocol = PingProtocol
     protocol_mode_next = "status"
 
-def main(address, q):
+def main(address):
     ip = str(address)
     factory = PingFactory()
     factory.connect(ip, 25565)
@@ -36,10 +36,7 @@ def main(address, q):
     jsonobj['ip']=ip
     jsonobj["time"]=str(datetime.datetime.now())
     if 'version' in jsonobj and jsonobj['version']['name'] not in garbage:
-        q.put(jsonobj)
-    else:
-        q.put(None)
-    return
+        write_json(jsonobj)
 
 if __name__ == "__main__":
     import sys

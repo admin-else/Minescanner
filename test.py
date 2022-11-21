@@ -1,49 +1,17 @@
-# SuperFastPython.com
-# example of returning a variable from a process using a queue
-from random import random
-from time import sleep
-from multiprocessing import Queue
-from multiprocessing import Process
-import pinger
-from _queue import Empty
- 
-# function to execute in a child process
-def task(queue):
-    sleep(12)
-    # generate some data
-    data = random()
-    # block, to simulate computational effort
-    print(f'Generated {data}', flush=True)
-    sleep(data)
-    # return data via queue
-    queue.put({'data': 'sus'})
-    queue.put({'data': 'sus1'})
-    queue.put(None)
- 
-# protect the entry point
-def ping(ip, q):
+import subprocess, os
+
+def try2ping(ip):
     try:
-        process = Process(target=pinger.main, args=(ip,q,))
-        process.start()
-        process.join(2)
-        process.terminate()
-    except Exception:
-        pass
+        subprocess.run(['python3','./serverinfo.py',ip], timeout=5)
+    except Exception as e:
+        print(e)
+        
+f = open('ips.txt', 'r')
+iplist = [ip.rstrip()
+          for ip in f.readlines()]
+f.close()
 
-def main():
-    q = Queue()
-    
-    ping('play.hypixel.net', q)
-    list = []
-    while(True):
-        try:
-            item = q.get()
-            if item!=None:
-                list.append(item)
-            else:
-                break
-        except:
-            break
-    print(list)
-
-main()
+for i, ip in enumerate(iplist):
+    try2ping(ip)
+    i+=1
+    print(f'Pinged {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')

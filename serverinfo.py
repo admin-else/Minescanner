@@ -74,6 +74,10 @@ class ServerInfoProtocol(SpawningClientProtocol):
                                 p_pub_key =+buff.unpack('B')
                             for k in range(buff.unpack_varint()):
                                 p_sig_key_sig =+buff.unpack('B')
+                        else:
+                            p_sig_timestamp = None
+                            p_pub_key = None
+                            p_sig_key_sig = None
                     else:
                         p_sig_timestamp = None
                         p_pub_key = None
@@ -151,7 +155,11 @@ class ChatLoggerFactory(ClientFactory):
 def run(args):
     # Log in
     #profile = yield ProfileCLI.make_profile(args)
-    profile = yield Profile.from_token('',open('../token.txt','r').read().rstrip(),'Admin_Else','3632330d373742708e8f270e581c45db') # U wont get my accses token (;
+    f = open('../token.txt','r')
+    profileinfo = [data.rstrip()
+                   for data in f.readlines()]
+    f.close()
+    profile = yield Profile.from_token('',profileinfo[0],profileinfo[1],'3632330d373742708e8f270e581c45db') # U wont get my accses token (;
 
     # Create factory
     factory = ChatLoggerFactory(profile)
@@ -169,11 +177,12 @@ def main(argv):
 
     run(args)
     reactor.run()
-    aPlayer = jsoninfo['tablist'][0]
-    if jsoninfo['tablist']!= None and aPlayer['uuid']==str(uuid.UUID.from_offline_player(aPlayer['name'])):
-        jsoninfo['offlineMode']=True
-    else:
-        jsoninfo['offlineMode']=False
+    if jsoninfo['tablist']!=None and len(jsoninfo['tablist'])!=0:
+        aPlayer = jsoninfo['tablist'][0]
+        if aPlayer['uuid']==str(uuid.UUID.from_offline_player(aPlayer['name'])):
+            jsoninfo['offlineMode']=True
+        else:
+            jsoninfo['offlineMode']=False
     safe(args.host)
 
 def getByUUID(list, uuid):
