@@ -1,9 +1,5 @@
-import requests
 from bs4 import BeautifulSoup
-import socket
-import os
-import concurrent.futures
-import subprocess
+import socket, json, os, concurrent.futures, subprocess, requests
 from multiprocessing import Pool
 
 def masscan(ipranges):
@@ -23,6 +19,12 @@ def masscan(ipranges):
 def try2ping(ip):
     try:
         subprocess.run(['python3','./pinger.py',ip], timeout=2)
+    except Exception:
+        print(Exception)
+
+def try2join(ip):
+    try:
+        subprocess.run(['python3','./pinger.py',ip], timeout=5)
     except Exception:
         print(Exception)
 
@@ -68,5 +70,17 @@ if __name__=='__main__':
     for i, ip in enumerate(iplist):
         try2ping(ip)
         i+=1
-        os.system('clear')
         print(f'Pinged {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
+
+    with open("servers.save.json", 'r') as f:
+        file_data = json.load(f)
+        iplist = [
+            server['ip']
+            for server in file_data['serverlist']
+            if server['version']['protocol']>=750 and server['version']['protocol']<=760
+            ]
+
+    for i, ip in enumerate(iplist):
+        try2join(ip)
+        i+=1
+        print(f'Joined {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')

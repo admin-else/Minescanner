@@ -18,9 +18,7 @@ def write_json(new_data):
 
 class PingProtocol(ClientProtocol):
     def status_response(self, data):
-        jsonobj["description"]=data['description']
-        jsonobj["players"]=data['players']
-        jsonobj["version"]=data['version']
+        jsonobj = data
         reactor.stop()
 
 class PingFactory(ClientFactory):

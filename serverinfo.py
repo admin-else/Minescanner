@@ -1,16 +1,61 @@
 from twisted.internet import reactor, defer
-import quarry.types.uuid as uuid
+from quarry.types.uuid import UUID as uuid
 from quarry.net.client import ClientFactory, SpawningClientProtocol
 from quarry.net.auth import ProfileCLI
 from quarry.net.auth import Profile
-from time import sleep
+import time
 import struct
 import datetime
 import argparse
 import json
-
+from quarry.net.protocol import Factory, Protocol, ProtocolError, \
+    protocol_modes_inv
 jsoninfo = {}
 class ServerInfoProtocol(SpawningClientProtocol):
+
+    def switch_protocol_mode(self, mode):
+        self.check_protocol_mode_switch(mode)
+        if mode in ("status", "login"):
+            # Send handshake
+            addr = self.transport.connector.getDestination()
+            self.send_packet(
+                "handshake",
+                self.buff_type.pack_varint(self.protocol_version) +
+                self.buff_type.pack_string(addr.host) +
+                self.buff_type.pack('H', addr.port) +
+                self.buff_type.pack_varint(
+                    protocol_modes_inv[self.factory.protocol_mode_next]))
+
+            # Switch buff type
+            self.buff_type = self.factory.get_buff_type(self.protocol_version)
+
+        self.protocol_mode = mode
+
+        if mode == "status":
+            # Send status request
+            self.send_packet("status_request")
+
+        elif mode == "login":
+            # Send login start
+            # TODO: Implement signatures/1.19.1 UUID sending
+            if self.protocol_version >= 760:  # 1.19.1+
+                self.send_packet("login_start",
+                                 self.buff_type.pack_string(self.factory.profile.display_name),
+                                 self.buff_type.pack("?",  False),  # No signature as we haven't implemented them here
+                                 #self.buff_type.pack('Q',int(jsoninfo['profileinfo'][5])),
+                                 #self.buff_type.pack_byte_array(bytes(jsoninfo['profileinfo'][3],'UTF-8')),
+                                 #self.buff_type.pack_byte_array(bytes(jsoninfo['profileinfo'][4],'UTF-8')),
+                                 self.buff_type.pack("?", True),
+                                 self.buff_type.pack_uuid(uuid.from_hex(jsoninfo['profileinfo'][2])))
+            elif self.protocol_version == 759:  # 1.19
+                self.send_packet("login_start",
+                                 self.buff_type.pack_string(self.factory.profile.display_name),
+                                 self.buff_type.pack("?", False))  # No signature as we haven't implemented them here
+            else:
+                # Send login start
+                self.send_packet("login_start", self.buff_type.pack_string(
+                    self.factory.profile.display_name))
+
     def setup(self):
         self.players = []
 
@@ -156,10 +201,10 @@ def run(args):
     # Log in
     #profile = yield ProfileCLI.make_profile(args)
     f = open('../token.txt','r')
-    profileinfo = [data.rstrip()
+    jsoninfo['profileinfo'] = [data.rstrip()
                    for data in f.readlines()]
     f.close()
-    profile = yield Profile.from_token('',profileinfo[0],profileinfo[1],'3632330d373742708e8f270e581c45db') # U wont get my accses token (;
+    profile = yield Profile.from_token('',jsoninfo['profileinfo'][0],jsoninfo['profileinfo'][1],jsoninfo['profileinfo'][2]) # U wont get my accses token (;
 
     # Create factory
     factory = ChatLoggerFactory(profile)
@@ -177,9 +222,10 @@ def main(argv):
 
     run(args)
     reactor.run()
-    if jsoninfo['tablist']!=None and len(jsoninfo['tablist'])!=0:
+    jsoninfo.pop('profileinfo')
+    if 'tablist' in jsoninfo and len(jsoninfo['tablist'])!=0:
         aPlayer = jsoninfo['tablist'][0]
-        if aPlayer['uuid']==str(uuid.UUID.from_offline_player(aPlayer['name'])):
+        if aPlayer['uuid']==str(uuid.from_offline_player(aPlayer['name'])):
             jsoninfo['offlineMode']=True
         else:
             jsoninfo['offlineMode']=False
