@@ -19,14 +19,14 @@ def masscan(ipranges):
 def try2ping(ip):
     try:
         subprocess.run(['python3','./pinger.py',ip], timeout=2)
-    except Exception:
-        print(Exception)
+    except Exception as e:
+        print(e.with_traceback)
 
 def try2join(ip):
     try:
         subprocess.run(['python3','./pinger.py',ip], timeout=5)
-    except Exception:
-        print(Exception)
+    except Exception as e:
+        print(e.with_traceback)
 
 def tcpping(ip):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
