@@ -140,10 +140,6 @@ class ServerInfoProtocol(SpawningClientProtocol):
                     }
                     if data not in self.players:
                         self.players.append(data)
-
-                elif p_action == 1:  # UPDATE_GAMEMODE
-                    p_gamemode = buff.unpack_varint()
-                    getByUUID(self.players, p_uuid)['gamemode'] = p_gamemode
                 elif p_action == 2:  # UPDATE_LATENCY
                     p_ping = buff.unpack_varint()
                     getByUUID(self.players, p_uuid)['ping'] = p_ping
@@ -200,10 +196,10 @@ class ChatLoggerFactory(ClientFactory):
 def run(args):
     # Log in
     #profile = yield ProfileCLI.make_profile(args)
-    f = open('../token.txt','r')
-    jsoninfo['profileinfo'] = [data.rstrip()
-                   for data in f.readlines()]
-    f.close()
+    f = open('../token.txt','r')                        ######################################   (That serves no purpose except looking nice)    /\_/\           ___
+    jsoninfo['profileinfo'] = [data.rstrip()            #               TODO                 #                                             \|   = o_o =_______    \ \  -Julie Rhodes-
+                   for data in f.readlines()]           # Use dotenv libary to load profiles #                                              \   __^      __(  \.__) )
+    f.close()                                           ######################################                                               (@)<_____>__(_____)____/
     profile = yield Profile.from_token('',jsoninfo['profileinfo'][0],jsoninfo['profileinfo'][1],jsoninfo['profileinfo'][2]) # U wont get my accses token (;
 
     # Create factory
@@ -219,9 +215,11 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("host")
     args = parser.parse_args(argv)
-
-    run(args)
-    reactor.run()
+    try:
+        run(args)
+        reactor.run()
+    except Exception as e:
+        print(e)
     jsoninfo.pop('profileinfo')
     if 'tablist' in jsoninfo and len(jsoninfo['tablist'])!=0:
         aPlayer = jsoninfo['tablist'][0]

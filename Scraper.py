@@ -20,13 +20,13 @@ def try2ping(ip):
     try:
         subprocess.run(['python3','./pinger.py',ip], timeout=2)
     except Exception as e:
-        print(e.with_traceback)
+        print(e)
 
 def try2join(ip):
     try:
-        subprocess.run(['python3','./pinger.py',ip], timeout=5)
+        subprocess.run(['python3','./serverinfo.py',ip], timeout=5)
     except Exception as e:
-        print(e.with_traceback)
+        print(e)
 
 def tcpping(ip):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,13 +48,16 @@ def scaper2(i):
     return addrslist
 
 if __name__=='__main__':
+    with open('servers.json', 'w') as f:
+        f.write('{"serverlist":{},"servers":{}}')
+    
     addrslist = []
     iprages = []
     res = requests.get('https://minecraft-server-list.com/')
     if res.status_code!=200:
         raise ConnectionError
-    lastpage = int(str(BeautifulSoup(res.content,'lxml').find('a', string='>>').get('href')).split('/')[2])
-    #lastpage = 3
+    #lastpage = int(str(BeautifulSoup(res.content,'lxml').find('a', string='>>').get('href')).split('/')[2])
+    lastpage = 3
     with concurrent.futures.ProcessPoolExecutor() as executor:
         for ips in executor.map(scaper2, range(1, lastpage)):
             if ips!=None:
@@ -72,7 +75,7 @@ if __name__=='__main__':
         i+=1
         print(f'Pinged {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
 
-    with open("servers.save.json", 'r') as f:
+    with open("servers.json", 'r') as f:
         file_data = json.load(f)
         iplist = [
             server['ip']

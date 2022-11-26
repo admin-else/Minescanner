@@ -32,9 +32,11 @@ class PingFactory(ClientFactory):
 def main(address):
     ip = str(address)
     factory = PingFactory()
-    factory.connect(ip, 25565)
-    reactor.run()
-            
+    try:
+        factory.connect(ip, 25565)
+        reactor.run()
+    except Exception as e:
+        print(e)
     jsonobj['ip']=ip
     jsonobj["time"]=str(datetime.datetime.now())
     if 'version' in jsonobj and jsonobj['version']['name'] not in garbage:

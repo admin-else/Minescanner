@@ -1,6 +1,7 @@
 import json
 import requests
 import dateutil.parser
+from Crypto.PublicKey import RSA
 
 def setSkin(token, skinUrl, skinType):
     skinTypeString = 'classic'
@@ -35,7 +36,7 @@ def updateprofileinfo():
     data[1] = uuidAndName['name']
     data[2] = uuidAndName['id']
     keys = r2j(getKeyPair(data[0]))
-    data[3] = keys['keyPair']['publicKey'].replace('\n', '')
+    data[3] = keys['keyPair']['publicKey'][30:][:-30].replace('\n', '')
     data[4] = keys['publicKeySignature']
     parsed_time = dateutil.parser.parse(keys['expiresAt'])
     t_in_millisec = parsed_time.strftime('%s%f')
