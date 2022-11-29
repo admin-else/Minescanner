@@ -1,1 +1,99 @@
-{"serverlist":{},"servers":{}}
+{
+  "serverlist": {},
+  "servers": {
+    "thegoldenegg.online": {
+      "hardcore": false,
+      "gamemode": 0,
+      "worlds": [
+        "minecraft:overworld",
+        "minecraft:the_nether",
+        "minecraft:the_end"
+      ],
+      "hashedSeed": 8172656017391676359,
+      "difficulty": 3,
+      "joinTime": "2022-11-27 12:48:15.095046",
+      "tablist": [
+        {
+          "uuid": "8f9969f2-0ef9-32a3-93e3-87d7426f4787",
+          "name": "Moshoman",
+          "properties": [
+            {
+              "name": "textures",
+              "value": "ewogICJ0aW1lc3RhbXAiIDogMTYzMDg1MjQyNDU5MCwKICAicHJvZmlsZUlkIiA6ICJiNWRkZTVmODJlYjM0OTkzYmMwN2Q0MGFiNWY2ODYyMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJsdXhlbWFuIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2RjYmY0M2IxNDA5YTNmYWIxMzgzZThjYmEwNTQ0NTc3YTQzNTg0NGQyZDQwMTg5NDIzODI3Y2QyYjkzZjQzYjQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+              "signature": "xv/73LflhL6gdbKZj5uXoF0ae4WPTaC2crImqP4Rsf/DtEImQcU6dtascAOvW6rPUFyhETAr4g+3ffb8HGhYO9R0QV/xBZaoK5cpG6DYHD2ObNqTYlHnNaXeuSeOy+ZmLGeOpEiMpR68y7rCZqbW8MisGTLw200W7ZMVP3wekfdn2ySDxumvnjTTjrppF9fk/vPrwfeSiNKsBbPdncB0Cxrqc+zS8WaAblyHumFhYN9gNhHc6s0vO6AA15vO8s2L3+U5t5BuK0r6GDxy2gakyArzRb7s6R+jjldrnuCjTmXnvmtNXxe4k671fOWSz0jV9xdO2rzWlbDvs8qfmw/epPnC7tjjBJnsjehzVCD/i1ZuQLAvku/e7FuYJCaFIloyAKifji/iySPJhoYPs3OQMQLplGPEXyM2X9wADcwYrxsztifNzw/4LWrg0HX7XSTg55T0zCm71TKyUtdRsXhoqx0/9wf/60yLxcBo1sbh3qlQOLBPgXTRYZ/Bp2lNm/XZtkKheEtvaH9jPUT2KWgSfjjsimOJ6P6TBTn0kKaKyz7zc5EDBm/by469cW4BA3RrEYD+dT9eR76jnwP1fymCQy0VjstR4ByD9IItL3RZr5c7Plz6CDcosgXD3iC2URGM5OGhcRb9B1wNXd61UYJ/FYZQ689BUTMwzvNqLAlBmWQ="
+            }
+          ],
+          "gamemode": 0,
+          "ping": 32,
+          "display_name": "[Admiral] Moshoman",
+          "timestamp": null,
+          "public_key": null,
+          "key_signature": null
+        },
+        {
+          "uuid": "f2913b9e-268e-31dc-b138-244b03dea47b",
+          "name": "GetALife6969",
+          "properties": [
+            {
+              "name": "textures",
+              "value": "ewogICJ0aW1lc3RhbXAiIDogMTYzMDg1MjQyNDU5MCwKICAicHJvZmlsZUlkIiA6ICJiNWRkZTVmODJlYjM0OTkzYmMwN2Q0MGFiNWY2ODYyMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJsdXhlbWFuIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2RjYmY0M2IxNDA5YTNmYWIxMzgzZThjYmEwNTQ0NTc3YTQzNTg0NGQyZDQwMTg5NDIzODI3Y2QyYjkzZjQzYjQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==",
+              "signature": "xv/73LflhL6gdbKZj5uXoF0ae4WPTaC2crImqP4Rsf/DtEImQcU6dtascAOvW6rPUFyhETAr4g+3ffb8HGhYO9R0QV/xBZaoK5cpG6DYHD2ObNqTYlHnNaXeuSeOy+ZmLGeOpEiMpR68y7rCZqbW8MisGTLw200W7ZMVP3wekfdn2ySDxumvnjTTjrppF9fk/vPrwfeSiNKsBbPdncB0Cxrqc+zS8WaAblyHumFhYN9gNhHc6s0vO6AA15vO8s2L3+U5t5BuK0r6GDxy2gakyArzRb7s6R+jjldrnuCjTmXnvmtNXxe4k671fOWSz0jV9xdO2rzWlbDvs8qfmw/epPnC7tjjBJnsjehzVCD/i1ZuQLAvku/e7FuYJCaFIloyAKifji/iySPJhoYPs3OQMQLplGPEXyM2X9wADcwYrxsztifNzw/4LWrg0HX7XSTg55T0zCm71TKyUtdRsXhoqx0/9wf/60yLxcBo1sbh3qlQOLBPgXTRYZ/Bp2lNm/XZtkKheEtvaH9jPUT2KWgSfjjsimOJ6P6TBTn0kKaKyz7zc5EDBm/by469cW4BA3RrEYD+dT9eR76jnwP1fymCQy0VjstR4ByD9IItL3RZr5c7Plz6CDcosgXD3iC2URGM5OGhcRb9B1wNXd61UYJ/FYZQ689BUTMwzvNqLAlBmWQ="
+            }
+          ],
+          "gamemode": 0,
+          "ping": 206,
+          "display_name": "[Veteran] GetALife6969",
+          "timestamp": null,
+          "public_key": null,
+          "key_signature": null
+        },
+        {
+          "uuid": "89c201bf-981c-38d1-8263-69e8841c1704",
+          "name": "MoinMeister06",
+          "properties": [
+            {
+              "name": "textures",
+              "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2OTU0OTQzMDA4OSwKICAicHJvZmlsZUlkIiA6ICI5Mzc4YTMxYzI5MWI0Y2JiODJiMjU5ZGFlNjFiMTVmYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNb2luTWVpc3RlcjA2IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VhZmI5NmUzZWNkNTZhYzU0NDQxZGYyOThlOGNhMWVmY2IxNzY1MjFhYmY1NDYwZTgyNjAzMmQ3ZTE4MDk1ZTciCiAgICB9CiAgfQp9",
+              "signature": "JmHux1CL9cir0FDt123GdqBtJ4zcgUlpQxfi5pFC9WOmNr+Gmf9nnaAogEzO1slJqPgVFQDjIlPhrrehdwv4esifjiI+8TG9dzP/atFyo0uc9SxHUr2omnAWIwUvSPC9VNKF4CzVl3DiSG1eQ/i/mHlozhObWU8ELksAiIxb6c8bp3ggpKKfHNBBelQyH2+hgLrZBCTEvrncChPb5Lq0cVlRCJo66iA7aLm4cIAoXEkGtCn2tF9KXBz5v+RXKlzKP39Ad0jC/cCLrUVihpFBZbnsBT+ka5ZAGhe+/IYYiFgwlURO9Jht95kiPUtsk/vroKjPc1xk9mzT4V9yebdrO4mX8ev+qPmJ1nCpu1pHZdPLki5ZvxrwtPYfNUEIc3i5yO/SK/Wegxa2NMWtniRhMDx0ZLA3OsbA+banbDCeaZDogBVykCaQlMgGK8r5Z3dyKWnAO1uRl7TPNcdSSejnyiQZjGJ9d/hpbXIzQ3A0uwyUVdEqKUjKQmZvOvt8uFIUqOyujoXVtWnc166oDjE6YcQFjDQsZ9ghUwGkiy7tNIR20P426xb4JCDw20dWxpWjIyELahomLloygWb2wYnJdVaeXYUiuZRD9ukbktzcr6X63EiSJ8P9NjrhNjiT6i//j37ekkiIZR6+U8om884gEdZKbeMYJw/BJl9UWlr3yws="
+            }
+          ],
+          "gamemode": 0,
+          "ping": 113,
+          "display_name": "[Veteran] MoinMeister06",
+          "timestamp": null,
+          "public_key": null,
+          "key_signature": null
+        },
+        {
+          "uuid": "ddb23020-45a8-386e-9fbc-af7194d66962",
+          "name": "MEDakf77",
+          "properties": [
+            {
+              "name": "textures",
+              "value": "ewogICJ0aW1lc3RhbXAiIDogMTY2OTU0OTI4NTc2MywKICAicHJvZmlsZUlkIiA6ICIxY2I4MzI1ZGRlOTQ0YjgwYTA1ZDk3MzYzMzc5MjM5MiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNRURha2Y3NyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8zMTQyZjY2MDY2MTVjOWJiMmM4YTE0ZGEzNmE4NmZkNjg1MmU5NzU2NmQ5MDBiZTUyMDRmNzlmZDI0NjExMzY4IgogICAgfQogIH0KfQ==",
+              "signature": "afVijbM/4oQzEV5REMykPU7RbbtxE9cvl0HNHxG0l3TXXN+FAyXTO0b9gkv0WBYN3y5XiOC0tgOuRGqh+d7vFF67HpnPV7FokO+yOtFtYpHW3TAAtsoS5UT3V48OCG7Vz1HNklp6OxFHdtq4VuXJGp12gbD0/2P26UG/bbBbG/Wse6gtTXB0dkqXlcyXlCyTTm38FVca2Nl91NkRfYZCKPTThl7CG4DHVJ6kJvxjjopLQGdPwjbyN8FqjB271eIa0CwCFP8qMFJy+LfoiOdk+BMxqcYmsckO/BbdrQQMK+hgCL5z1lk1OL4T79+hEGUS4t7K2hA/JHOq6dGh5xo+tvbnkaSjwh0nDXQbGWIX6imFYhleNg3ZxnOHNVZa2OA5rkbeRptV2QLTNOaY63tv2hIr3ap8duiskcALef1iPeu40zcXPV5nYI700y6iQoRp2J5bucCkRv3H5d14TMKMhL4ew+pWWSoktJETxrOnGbqB8ma7eat6orM77F/AAaq2sGT0+N7OIt0Qbqx7GlPbO6EI5+4AeLDEnqKxIJvAJKM4J69b3aSMp9BAKAndRgW0J9FTT9yN4aeHG70YKtr3PjAFDOtc39/b2qTN4mHdSBQPZiTmXdmNheZZfyU1iG6/Qn4afsVaXFH8c3JLuDyhXDY8B8MQlusujsUvZ3UXqo4="
+            }
+          ],
+          "gamemode": 0,
+          "ping": 62,
+          "display_name": "[Member] MEDakf77",
+          "timestamp": null,
+          "public_key": null,
+          "key_signature": null
+        },
+        {
+          "uuid": "cbf5d80a-f833-3ba2-b857-161f49a1dfac",
+          "name": "Admin_Else",
+          "properties": [],
+          "gamemode": 0,
+          "ping": 0,
+          "display_name": "[Member] Admin_Else",
+          "timestamp": null,
+          "public_key": null,
+          "key_signature": null
+        }
+      ],
+      "offlineMode": true
+    }
+  }
+}

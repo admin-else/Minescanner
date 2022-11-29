@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import socket, json, os, concurrent.futures, subprocess, requests
+import socket, json, os, concurrent.futures, subprocess, requests, WebsiteScrapers
 from multiprocessing import Pool
 
 def masscan(ipranges):
@@ -51,18 +51,8 @@ if __name__=='__main__':
     with open('servers.json', 'w') as f:
         f.write('{"serverlist":{},"servers":{}}')
     
-    addrslist = []
+    addrslist = WebsiteScrapers.main()
     iprages = []
-    res = requests.get('https://minecraft-server-list.com/')
-    if res.status_code!=200:
-        raise ConnectionError
-    #lastpage = int(str(BeautifulSoup(res.content,'lxml').find('a', string='>>').get('href')).split('/')[2])
-    lastpage = 3
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        for ips in executor.map(scaper2, range(1, lastpage)):
-            if ips!=None:
-                addrslist=addrslist+ips
-    addrslist = list(dict.fromkeys(addrslist))
     print('done downloading ips')
     with concurrent.futures.ProcessPoolExecutor(max_workers=70) as executor:
         for range in executor.map(tcpping, addrslist):
