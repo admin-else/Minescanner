@@ -1,6 +1,10 @@
 from bs4 import BeautifulSoup
-import socket, json, os, concurrent.futures, subprocess, requests, WebsiteScrapers
+import socket, json, os, concurrent.futures, subprocess, requests
 from multiprocessing import Pool
+from twisted.internet import reactor
+from quarry.net.client import ClientFactory, ClientProtocol
+import json
+import datetime
 
 def masscan(ipranges):
     lines = [f'range = {iprange}.0-{iprange}.255\n' for iprange in ipranges]
@@ -50,8 +54,17 @@ def scaper2(i):
 if __name__=='__main__':
     with open('servers.json', 'w') as f:
         f.write('{"serverlist":{},"servers":{}}')
-    
-    addrslist = WebsiteScrapers.main()
+
+    try:
+        os.system('/bin/python3.8 ./WebsiteScrapers.py')
+    except Exception as e:
+        print(e)
+        exit()
+
+    with open('ips.txt', 'r') as f:
+        addrslist  = f.readlines()
+    addrslist = [addr.rstrip()
+                 for addr in addrslist]
     iprages = []
     print('done downloading ips')
     with concurrent.futures.ProcessPoolExecutor(max_workers=70) as executor:

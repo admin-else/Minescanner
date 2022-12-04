@@ -2,6 +2,7 @@ import json
 import requests
 import dateutil.parser
 from Crypto.PublicKey import RSA
+import base64
 
 def setSkin(token, skinUrl, skinType):
     skinTypeString = 'classic'

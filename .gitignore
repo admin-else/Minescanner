@@ -2,5 +2,5 @@ __pycache__/
 test.py
 test2.py
 ips.txt
-masscan.conf
 paused.conf
+settings.env

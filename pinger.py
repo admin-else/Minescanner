@@ -1,3 +1,4 @@
+#from twisted.internet import reactor
 from twisted.internet import reactor
 from quarry.net.client import ClientFactory, ClientProtocol
 import json
@@ -20,9 +21,9 @@ def write_json(new_data, ip):
 
 class PingProtocol(ClientProtocol):
     def status_response(self, data):
-        jsonobj["description"]=data['description']
-        jsonobj["players"]=data['players']
-        jsonobj["version"]=data['version']
+        for k, v in sorted(data.items()):
+            if k != "favicon":
+                jsonobj[k]=v
         reactor.stop()
 
 class PingFactory(ClientFactory):
@@ -37,11 +38,12 @@ def main(address):
         reactor.run()
     except Exception as e:
         print(e)
+        return
     jsonobj['ip']=ip
     jsonobj["time"]=str(datetime.datetime.now())
     if 'version' in jsonobj and jsonobj['version']['name'] not in garbage:
         write_json(jsonobj, ip)
 
-if __name__ == "__main__":
-    import sys
-    main(sys.argv[1])
+
+import sys
+main(sys.argv[1])

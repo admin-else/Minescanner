@@ -1,8 +1,6 @@
-import requests
 from bs4 import BeautifulSoup
+import requests
 import concurrent.futures
-
-garbage = ['hypixel.io', 'aternos.me', 'hypixel.net', 'nerd.nu', 'minehut.gg', ':']
 
 def getSoup(url, timeout=None):
     try:
@@ -40,36 +38,31 @@ def mcs(i):
     except Exception as e:
         print(e)
 
-def mcl(i):
-    try:
-        return [tag.text
-                for tag in getSoup(f'https://minecraftlist.com/servers/{i}', timeout=2).find_all('strong', class_="block truncate")]
-    except Exception as e:
-        print(e)
 
-def main():      
-    addrs = []
-    #lastpage = 3
-    lastpage = int(getSoup('https://minecraft-server-list.com').find('a', string='>>').get('href').split('/')[2])
-    print('Started scraping',lastpage,'pages of https://minecraft-server-list.com.')
-    addrs+=scanWebsite(mc_s_l_com, lastpage)
-    print('Scraped https://minecraft-server-list.com.')
-    lastpage = int(getSoup('https://minecraftservers.org').find('a', string='>>').get('href').split('/')[2])
-    print('Started scraping',lastpage,'pages of https://minecraftservers.org.')
-    addrs+=scanWebsite(mcs, lastpage)
-    print('Scanned https://minecraftservers.org.')
-    addrs = list(dict.fromkeys(addrs))
-    tmpaddrs = []
-    for ip in addrs:
-        isgood = True
-        for indicator in garbage:
-            if ip.__contains__(indicator):
-                isgood = False
-        if ip not in tmpaddrs and isgood:
-            tmpaddrs.append(ip)
-    addrs = tmpaddrs
-    return addrs
-    
-    #print(addrs)
-    #print(len(addrs))
-main()
+
+addrs = []
+#lastpage = 3
+lastpage = int(getSoup('https://minecraft-server-list.com').find('a', string='>>').get('href').split('/')[2])
+print('Started scraping',lastpage,'pages of https://minecraft-server-list.com.')
+addrs+=scanWebsite(mc_s_l_com, lastpage)
+print('Scraped https://minecraft-server-list.com.')
+lastpage = int(getSoup('https://minecraftservers.org').find('a', string='>>').get('href').split('/')[2])
+print('Started scraping',lastpage,'pages of https://minecraftservers.org.')
+addrs+=scanWebsite(mcs, lastpage)
+print('Scanned https://minecraftservers.org.')
+addrs = list(dict.fromkeys(addrs))
+tmpaddrs = []
+garbage = ['hypixel.io', 'aternos.me', 'hypixel.net', 'nerd.nu', 'minehut.gg', ':']
+for ip in addrs:
+    isgood = True
+    for indicator in garbage:
+        if ip.__contains__(indicator):
+            isgood = False
+    if ip not in tmpaddrs and isgood:
+        tmpaddrs.append(ip)
+addrs = tmpaddrs
+
+with open('ips.txt', 'w') as f:
+    f.writelines([addr+'\n'
+                  for addr in addrs
+                ])
