@@ -3,6 +3,7 @@ from twisted.internet import reactor
 from quarry.net.client import ClientFactory, ClientProtocol
 import json
 import datetime
+import dbutils
 
 jsonobj = {}
 ip = ''
@@ -42,8 +43,7 @@ def main(address):
     jsonobj['ip']=ip
     jsonobj["time"]=str(datetime.datetime.now())
     if 'version' in jsonobj and jsonobj['version']['name'] not in garbage:
-        write_json(jsonobj, ip)
-
+        dbutils.addPing(jsonobj)
 
 import sys
 main(sys.argv[1])

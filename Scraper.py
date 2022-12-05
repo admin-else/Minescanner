@@ -22,7 +22,7 @@ def masscan(ipranges):
 
 def try2ping(ip):
     try:
-        subprocess.run(['python3','./pinger.py',ip], timeout=2)
+        subprocess.run(['python3','./pinger.py',ip], timeout=3)
     except Exception as e:
         print(e)
 
@@ -75,7 +75,6 @@ if __name__=='__main__':
     iplist = masscan(iprages)
     for i, ip in enumerate(iplist):
         try2ping(ip)
-        i+=1
         print(f'Pinged {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
 
     with open("servers.json", 'r') as f:
@@ -88,5 +87,4 @@ if __name__=='__main__':
 
     for i, ip in enumerate(iplist):
         try2join(ip)
-        i+=1
         print(f'Joined {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
