@@ -37,8 +37,7 @@ def main(address):
     try:
         factory.connect(ip, 25565)
         reactor.run()
-    except Exception as e:
-        print(e)
+    except:
         return
     jsonobj['ip']=ip
     jsonobj["time"]=str(datetime.datetime.now())

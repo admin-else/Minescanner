@@ -38,18 +38,29 @@ def mcs(i):
     except Exception as e:
         print(e)
 
+def mcl(i):
+    try:
+        return [tag.text
+                for tag in getSoup(f'https://minecraftlist.com/servers/{i}', timeout=2).find_all('strong', class_="block truncate")]
+    except Exception as e:
+        print(e)
+
 
 
 addrs = []
-#lastpage = 3
-lastpage = int(getSoup('https://minecraft-server-list.com').find('a', string='>>').get('href').split('/')[2])
+lastpage = 3
+#lastpage = int(getSoup('https://minecraft-server-list.com').find('a', string='>>').get('href').split('/')[2])
 print('Started scraping',lastpage,'pages of https://minecraft-server-list.com.')
 addrs+=scanWebsite(mc_s_l_com, lastpage)
 print('Scraped https://minecraft-server-list.com.')
-lastpage = int(getSoup('https://minecraftservers.org').find('a', string='>>').get('href').split('/')[2])
+#lastpage = int(getSoup('https://minecraftservers.org').find('a', string='>>').get('href').split('/')[2])
 print('Started scraping',lastpage,'pages of https://minecraftservers.org.')
 addrs+=scanWebsite(mcs, lastpage)
 print('Scanned https://minecraftservers.org.')
+print('Stating scanning https://minecraftlist.com')
+#addrs+=scanWebsite(mcl, 100)
+print('Done scanning https://minecraftlist.com')
+print('Cutting ips')
 addrs = list(dict.fromkeys(addrs))
 tmpaddrs = []
 garbage = ['hypixel.io', 'aternos.me', 'hypixel.net', 'nerd.nu', 'minehut.gg', ':']

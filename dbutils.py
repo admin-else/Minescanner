@@ -431,6 +431,6 @@ def addPing(pingdict):
     if 'sample' in pingdict['players']:
       rowid = c.lastrowid
       for player in pingdict['players']['sample']:
-        c.execute('INSERT INTO pingplayers VALUES(?, ?, ?)', (str(rowid), stripString(player['uuid']), stripString(player['name'])))
+        c.execute('INSERT INTO pingplayers VALUES(?, ?, ?)', (str(rowid), stripString(player['id']), stripString(player['name'])))
     conn.commit()
     print(data)

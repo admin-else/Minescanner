@@ -3,6 +3,7 @@ import socket, json, os, concurrent.futures, subprocess, requests
 from multiprocessing import Pool
 from twisted.internet import reactor
 from quarry.net.client import ClientFactory, ClientProtocol
+from eventlet.timeout import Timeout
 import json
 import datetime
 
@@ -42,15 +43,6 @@ def tcpping(ip):
     except:
         pass
 
-def scaper2(i):
-    r = requests.get(f'https://minecraft-server-list.com/page/{i}/')
-    soup = BeautifulSoup(r.content, 'lxml')
-    tags = soup.find_all('div', class_="adressen online")
-    addrslist = []
-    for tag in tags:
-        addrslist.append(tag.text)
-    return addrslist
-
 if __name__=='__main__':
     with open('servers.json', 'w') as f:
         f.write('{"serverlist":{},"servers":{}}')
@@ -73,18 +65,20 @@ if __name__=='__main__':
                 iprages.append(range)
     print('done pinging ips')
     iplist = masscan(iprages)
-    for i, ip in enumerate(iplist):
-        try2ping(ip)
-        print(f'Pinged {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        executor.map(try2ping, iplist)
+    #for i, ip in enumerate(iplist):
+    #    try2ping(ip)
+    #    print(f'Pinged {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
 
-    with open("servers.json", 'r') as f:
-        file_data = json.load(f)
-        iplist = [
-            server['ip']
-            for server in file_data['serverlist']
-            if server['version']['protocol']>=750 and server['version']['protocol']<=760
-            ]
+    #with open("servers.json", 'r') as f:
+    #    file_data = json.load(f)
+    #    iplist = [
+    #        server['ip']
+    #        for server in file_data['serverlist']
+    #        if server['version']['protocol']>=750 and server['version']['protocol']<=760
+    #        ]
 
-    for i, ip in enumerate(iplist):
-        try2join(ip)
-        print(f'Joined {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
+    #for i, ip in enumerate(iplist):
+    #    try2join(ip)
+    #    print(f'Joined {ip} - {i}/{len(iplist)} - {round(i/len(iplist)*100,2)}%')
