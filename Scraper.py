@@ -60,7 +60,7 @@ if __name__=='__main__':
         for i, addr in enumerate(iplist):
             try2ping(addr)
             print(f' {i} / {len(iplist)} - {100*i/len(iplist)}% - {addr}')
-    elif os.getenv('THREADPINGS') == '1':
+    else:
         with concurrent.futures.ProcessPoolExecutor() as executor:
             executor.map(try2ping, iplist)
 
