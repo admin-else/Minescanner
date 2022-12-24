@@ -7,7 +7,7 @@ def masscan(ipranges):
         os.remove('./masscan.conf')
     with open('./masscan.conf','w') as f:
         f.writelines(lines)
-    os.system('sudo masscan -c ./masscan.conf -p 25565 --wait=3 --rate {} -oL output.txt'.format(os.getenv('MASSCANRATE')))
+    os.system('sudo masscan -c ./masscan.conf -p 25565 --excludefile ./excludefile.txt --wait=3 --rate {} -oL output.txt'.format(os.getenv('MASSCANRATE')))
     with open('output.txt', 'r') as f:
         lines = f.readlines()
     ips = [

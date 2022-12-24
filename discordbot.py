@@ -68,6 +68,7 @@ conn = sqlite3.connect('./test.db')
 
 datalist = []
 serverindex = 0
+searchoptions = ''
 
 
 def translate2versionNumber(version):
@@ -75,7 +76,7 @@ def translate2versionNumber(version):
         if vers[0]==version:
             return vers[1]
 
-def createServerEmbed(server):
+def createServerEmbed(server, index, lastindex):
     # (1671117080733501935, '85.14.194.229', 761, 10, 'maenner auf liegefahrraedern haben keinen sex.', 0, '1.19.3', 0)
 
     ip = server[1]
@@ -84,13 +85,33 @@ def createServerEmbed(server):
     serverversion = server[6]
     ismodded = server[7]
     maxplayers = server[3]
+    global searchoptions
+
+    c = conn.cursor()
+    c.execute('SELECT rowid FROM ping WHERE time = ? AND ip = ? AND protvers = ? AND maxplayers = ? AND desc = ? AND iscolored = ? AND version = ? AND ismodded = ?', server)
+    c.execute('SELECT name FROM pingplayers WHERE pingid = ?', c.fetchone())
+    players = c.fetchall()
+    c.close()
+
+    unpackplayers = '⠀'
+    for player in players:
+        unpackplayers+=str(player[0])+'\n'
 
     embedfooter = interactions.EmbedFooter(
-        text='?/'+str(maxplayers)
+        text='scan took place on '+str(datetime.datetime.fromtimestamp(server[0] // 1000000000))
     )
 
     if(ismodded):
-        serverversion='*'+serverversion+'*'
+        serverversion='``'+serverversion+'``'
+
+    indexautherfield = interactions.EmbedAuthor(
+        name = searchoptions[:-2]+' ('+str(index)+'/'+str(lastindex)+')'
+    )
+
+    playersfield = interactions.EmbedField(
+        name = f'Players {str(len(players))}/{str(maxplayers)}',
+        value = unpackplayers
+    )
 
     serverversionfield = interactions.EmbedField(
         name='Version',
@@ -104,44 +125,88 @@ def createServerEmbed(server):
         title=ip,
         description=serverdescription,
         footer=embedfooter,
-        fields=[serverversionfield]
+        author=indexautherfield,
+        fields=[serverversionfield, playersfield]
     )
 
 @bot.event
 async def on_ready():
     print(f'ready as {bot.me.name}')
 
+@bot.command(name='searchplayer',
+             description='Search for player in database.',
+             options=[
+                interactions.Option(
+                    name = 'name',
+                    type = interactions.OptionType.STRING,
+                    description = 'The name of the player u want to search for.',
+                    required    = True
+                )
+             ])
+async def server(ctx: interactions.CommandContext,
+                 name: str = None):
+    global serverindex
+    serverindex = 0
+    global datalist
+    datalist = []
+    global searchoptions
+    searchoptions = 'Servers where '+name+' is on--'
+
+    c = conn.cursor()
+    c.execute('SELECT pingid FROM pingplayers WHERE name = ?', (name,))
+    for serverid in c.fetchall():
+        c.execute('SELECT * FROM ping WHERE rowid = ?', serverid)
+        datalist.append(c.fetchone())
+    c.close()
+    if len(datalist)==0:
+        await ctx.send('the search u did did not yield any results ):')
+        return
+
+    button1 = interactions.Button(
+        label = '<<',
+        style = interactions.ButtonStyle.PRIMARY,
+        custom_id = 'previousserver'
+    )
+
+    button2 = interactions.Button(
+        label = '>>',
+        style = interactions.ButtonStyle.PRIMARY,
+        custom_id = 'nextserver'
+    )
+
+    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
+
 @bot.command(
-    name="server",
-    description="Find a server with spesific atributes.",
+    name='server',
+    description='Find a server with spesific atributes.',
     options = [
         interactions.Option(
-            name        = "description",
-            description = "Search for a keyword in description.",
+            name        = 'description',
+            description = 'Search for a keyword in description.',
             type        = interactions.OptionType.STRING,
             required    = False,
         ),
         interactions.Option(
-            name        = "iscolored",
-            description = "Check if the description is colord.",
+            name        = 'iscolored',
+            description = 'Check if the description is colord.',
             type        = interactions.OptionType.BOOLEAN,
             required    = False,
         ),
         interactions.Option(
-            name        = "ismodded",
-            description = "Check if the server is modded.",
+            name        = 'ismodded',
+            description = 'Check if the server is modded.',
             type        = interactions.OptionType.BOOLEAN,
             required    = False,
         ),
         interactions.Option(
-            name        = "version",
-            description = "Search for a spesific version.",
+            name        = 'version',
+            description = 'Search for a spesific version.',
             type        = interactions.OptionType.STRING,
             required    = False,
         ),
         interactions.Option(
-            name        = "versiontext",
-            description = "Search for a server software like paper.",
+            name        = 'versiontext',
+            description = 'Search for a server software like paper.',
             type        = interactions.OptionType.STRING,
             required    = False,
         ),
@@ -155,6 +220,7 @@ async def server(ctx: interactions.CommandContext,
                  versiontext: str = None):
     sqlcommand = 'SELECT * FROM ping WHERE maxplayers <> 0 '
     sqlarguments = []
+    global searchoptions
     searchoptions= ''
     if description!=None:
         sqlcommand+='AND desc LIKE ? '
@@ -195,9 +261,14 @@ async def server(ctx: interactions.CommandContext,
 
     global serverindex
     serverindex = 0
-    
     global datalist
     datalist = c.fetchall()
+
+    c.close()
+
+    if len(datalist)==0:
+        await ctx.send('the search u did did not yield any results ):')
+        return
 
     button1 = interactions.Button(
         label = '<<',
@@ -211,16 +282,21 @@ async def server(ctx: interactions.CommandContext,
         custom_id = 'nextserver'
     )
 
-    await ctx.send('', embeds=createServerEmbed(datalist[serverindex]), components=[button1, button2])
+    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
 
 @bot.component('previousserver')
 async def button_response(ctx):
     global serverindex
     global datalist
+    serverindex-=1
+    if len(datalist)==0:
+        await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
+        return
     if serverindex<0:
+        serverindex+=1
         await ctx.edit('')
         return
-    serverindex-=1
+    
     button1 = interactions.Button(
         label = '<<',
         style = interactions.ButtonStyle.PRIMARY,
@@ -232,16 +308,20 @@ async def button_response(ctx):
         style = interactions.ButtonStyle.PRIMARY,
         custom_id = 'nextserver'
     )
-    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex]), components=[button1, button2])
+    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
 
 @bot.component('nextserver')
 async def button_response(ctx):
     global serverindex
     global datalist
-    if serverindex>len(datalist):
+    serverindex+=1
+    if len(datalist)==0:
+        await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
+        return
+    if serverindex>=len(datalist):
+        serverindex-=1
         await ctx.edit('')
         return
-    serverindex+=1
     button1 = interactions.Button(
         label = '<<',
         style = interactions.ButtonStyle.PRIMARY,
@@ -253,6 +333,6 @@ async def button_response(ctx):
         style = interactions.ButtonStyle.PRIMARY,
         custom_id = 'nextserver'
     )
-    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex]), components=[button1, button2])
+    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
 
 bot.start()
