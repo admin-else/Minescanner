@@ -66,10 +66,7 @@ versionregex = [('1.19.3', 761),
 
 conn = sqlite3.connect('./test.db')
 
-datalist = []
-serverindex = 0
-searchoptions = ''
-
+datalist = {}
 
 def translate2versionNumber(version):
     for vers in versionregex:
@@ -90,7 +87,7 @@ def getComponents():
     )
     ]
 
-def createServerEmbed(server, index, lastindex):
+def createServerEmbed(server, index, lastindex, searchoptions):
     # (1671117080733501935, '85.14.194.229', 761, 10, 'maenner auf liegefahrraedern haben keinen sex.', 0, '1.19.3', 0)
 
     ip = server[1]
@@ -99,7 +96,6 @@ def createServerEmbed(server, index, lastindex):
     serverversion = server[6]
     ismodded = server[7]
     maxplayers = server[3]
-    global searchoptions
 
     c = conn.cursor()
     c.execute('SELECT rowid FROM ping WHERE time = ? AND ip = ? AND protvers = ? AND maxplayers = ? AND desc = ? AND iscolored = ? AND version = ? AND ismodded = ?', server)
@@ -113,30 +109,8 @@ def createServerEmbed(server, index, lastindex):
     for player in players:
         unpackplayers+=str(player[0])+'\n'
 
-    embedfooter = interactions.EmbedFooter(
-        text='scan took place on '+str(datetime.datetime.fromtimestamp(server[0] // 1000000000))
-    )
-
     if(ismodded):
         serverversion='``'+serverversion+'``'
-
-    indexautherfield = interactions.EmbedAuthor(
-        name = searchoptions[:-2]+' ('+str(index)+'/'+str(lastindex)+')'
-    )
-
-    playersfield = interactions.EmbedField(
-        name = f'Players {str(len(players))}/{str(maxplayers)}',
-        value = unpackplayers
-    )
-
-    serverversionfield = interactions.EmbedField(
-        name='Version',
-        value=serverversion
-    )
-
-    img = interactions.EmbedImageStruct(
-        url=f'https://eu.mc-api.net/v3/server/favicon/{ip}'
-    )
 
     if isColored:
         serverdescription='``'+serverdescription+'``'
@@ -144,10 +118,22 @@ def createServerEmbed(server, index, lastindex):
     return interactions.Embed(
         title=ip,
         description=serverdescription,
-        footer=embedfooter,
-        author=indexautherfield,
-        fields=[serverversionfield, playersfield],
-        thumbnail = img
+        footer=interactions.EmbedFooter(
+        text='scan took place on '+str(datetime.datetime.fromtimestamp(server[0] // 1000000000))
+    ),
+        author=interactions.EmbedAuthor(
+        name = searchoptions[:-2]+' ('+str(index)+'/'+str(lastindex)+')'
+    ),
+        fields=[interactions.EmbedField(
+        name='Version',
+        value=serverversion
+    ), interactions.EmbedField(
+        name = f'Players {str(len(players))}/{str(maxplayers)}',
+        value = unpackplayers
+    )],
+        thumbnail = interactions.EmbedImageStruct(
+            url=f'https://eu.mc-api.net/v3/server/favicon/{ip}'
+        )
     )
 
 @bot.event
@@ -164,25 +150,21 @@ async def on_ready():
                     required    = True
                 )
              ])
-async def server(ctx: interactions.CommandContext,
+async def searchplayer(ctx: interactions.CommandContext,
                  name: str = None):
-    global serverindex
-    serverindex = 0
     global datalist
-    datalist = []
-    global searchoptions
-    searchoptions = 'Servers where '+name+' is on--'
+    datalist[str(ctx.channel_id)]['searchoptions'] = 'Servers where '+name+' is on--'
 
     c = conn.cursor()
     c.execute('SELECT pingid FROM pingplayers WHERE name = ?', (name,))
     for serverid in c.fetchall():
         c.execute('SELECT * FROM ping WHERE rowid = ?', serverid)
-        datalist.append(c.fetchone())
+        datalist[str(ctx.channel_id)]['servers'].append(c.fetchone())
     c.close()
-    if len(datalist)==0:
+    if len(datalist[str(ctx.channel_id)]['servers'])==0:
         await ctx.send('I dont know '+name+' ):')
         return
-    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
+    await ctx.send('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers'])), components=getComponents())
 
 @bot.command(
     name='server',
@@ -228,7 +210,6 @@ async def server(ctx: interactions.CommandContext,
                  versiontext: str = None):
     sqlcommand = 'SELECT * FROM ping WHERE maxplayers <> 0 '
     sqlarguments = []
-    global searchoptions
     searchoptions= ''
     if description!=None:
         sqlcommand+='AND desc LIKE ? '
@@ -266,46 +247,45 @@ async def server(ctx: interactions.CommandContext,
     c = conn.cursor()
 
     c.execute(sqlcommand, tuple(sqlarguments))
-
-    global serverindex
-    serverindex = 0
     global datalist
-    datalist = c.fetchall()
+    datalist[str(ctx.channel_id)] = {}
+    datalist[str(ctx.channel_id)]['count'] = 0
+    datalist[str(ctx.channel_id)]['servers'] = c.fetchall()
+    datalist[str(ctx.channel_id)]['searchoptions'] = searchoptions
 
     c.close()
 
-    if len(datalist)==0:
+    if len(datalist[str(ctx.channel_id)]['servers'])==0:
         await ctx.send('the search u did did not yield any results ):')
         return
 
-    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
+    await ctx.send('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), datalist[str(ctx.channel_id)]['searchoptions']), components=getComponents())
 
 @bot.component('previousserver')
 async def button_response(ctx):
-    global serverindex
     global datalist
-    serverindex-=1
-    if len(datalist)==0:
+    if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
         await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
         return
-    if serverindex<0:
-        serverindex+=1
+    datalist[str(ctx.channel_id)]['count']-=1
+    if datalist[str(ctx.channel_id)]['count']>=len(datalist[str(ctx.channel_id)]['servers']):
+        datalist[str(ctx.channel_id)]['count']+=1
         await ctx.edit('')
         return
-    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
+    await ctx.edit('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), datalist[str(ctx.channel_id)]['searchoptions']), components=getComponents())
+
 
 @bot.component('nextserver')
 async def button_response(ctx):
-    global serverindex
     global datalist
-    serverindex+=1
-    if len(datalist)==0:
+    if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
         await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
         return
-    if serverindex>=len(datalist):
-        serverindex-=1
+    datalist[str(ctx.channel_id)]['count']+=1
+    if datalist[str(ctx.channel_id)]['count']>=len(datalist[str(ctx.channel_id)]['servers']):
+        datalist[str(ctx.channel_id)]['count']-=1
         await ctx.edit('')
         return
-    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
+    await ctx.edit('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), datalist[str(ctx.channel_id)]['searchoptions']), components=getComponents())
 
 bot.start()
