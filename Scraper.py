@@ -1,4 +1,4 @@
-import socket, os, concurrent.futures, subprocess, WebsiteScrapers, pinger, multiprocessing, signal, dotenv
+import socket, os, concurrent.futures, subprocess, WebsiteScrapers, pinger, multiprocessing, signal, dotenv, time
 
 def masscan(ipranges):
     lines = [f'range = {iprange}.0-{iprange}.255\n' for iprange in ipranges]
@@ -24,7 +24,6 @@ def try2ping(ip):
         p.join(2)
         if p.is_alive:
             p.terminate()
-            raise TimeoutError('ping has timeout')
     except Exception as e:
         print(e)
 
@@ -40,6 +39,8 @@ def tcpping(ip):
 
 if __name__=='__main__':
     dotenv.load_dotenv('profile.env')
+
+    start_time = time.time_ns()
 
     try:
         addrslist = WebsiteScrapers.getips()
@@ -63,4 +64,6 @@ if __name__=='__main__':
     else:
         with concurrent.futures.ProcessPoolExecutor() as executor:
             executor.map(try2ping, iplist)
+    
+    print(start_time)
 

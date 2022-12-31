@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import concurrent.futures
 
 def getSoup(url, timeout=None):
+    print (url, end="\r")
     try:
         try:
             r = requests.get(url, timeout=timeout)

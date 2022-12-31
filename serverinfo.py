@@ -218,8 +218,6 @@ class ServerInfoProtocol(SpawningClientProtocol):
                     else:
                         p_display_name = None
                         getByUUID(self.players, p_uuid)['display_name'] = p_display_name
-                elif p_action == 4:  # REMOVE_PLAYER
-                    self.players.remove(getByUUID(self.players, p_uuid))
 
     def packet_join_game(self, buff):
         buff.unpack('i') # eid
@@ -274,27 +272,20 @@ class ChatLoggerFactory(ClientFactory):
 
 
 @defer.inlineCallbacks
-def run(args):                            
+def run(ip):                            
     profile = yield Profile.from_token('',os.getenv('MC_TOKEN'),os.getenv('MC_NAME'),os.getenv('MC_UUID')) # U wont get my accses token (;
 
     # Create factory
     factory = ChatLoggerFactory(profile)
 
     # Connect!
-    ip = args.host
     factory.connect(ip, 25565)
 
 
-def main(argv):
-
+def main(ip):
     dotenv.load_dotenv('profile.env')
-
-    #parser = ProfileCLI.make_parser()
-    parser = argparse.ArgumentParser()
-    parser.add_argument("host")
-    args = parser.parse_args(argv)
     try:
-        run(args)
+        run(ip)
         reactor.run()
     except Exception as e:
         print(e)
@@ -313,4 +304,4 @@ def getByUUID(list, uuid):
 
 if __name__ == "__main__":
     import sys
-    main(sys.argv[1:])
+    main(sys.argv[1])

@@ -76,6 +76,20 @@ def translate2versionNumber(version):
         if vers[0]==version:
             return vers[1]
 
+def getComponents():
+    return [
+        interactions.Button(
+        label = '<<',
+        style = interactions.ButtonStyle.PRIMARY,
+        custom_id = 'previousserver'
+    ),
+    interactions.Button(
+        label = '>>',
+        style = interactions.ButtonStyle.PRIMARY,
+        custom_id = 'nextserver'
+    )
+    ]
+
 def createServerEmbed(server, index, lastindex):
     # (1671117080733501935, '85.14.194.229', 761, 10, 'maenner auf liegefahrraedern haben keinen sex.', 0, '1.19.3', 0)
 
@@ -93,7 +107,9 @@ def createServerEmbed(server, index, lastindex):
     players = c.fetchall()
     c.close()
 
-    unpackplayers = '⠀'
+    unpackplayers = ''
+    if len(players)==0:
+        unpackplayers = '⠀'
     for player in players:
         unpackplayers+=str(player[0])+'\n'
 
@@ -118,15 +134,20 @@ def createServerEmbed(server, index, lastindex):
         value=serverversion
     )
 
+    img = interactions.EmbedImageStruct(
+        url=f'https://eu.mc-api.net/v3/server/favicon/{ip}'
+    )
+
     if isColored:
-        serverdescription='*'+serverdescription+'*'
+        serverdescription='``'+serverdescription+'``'
 
     return interactions.Embed(
         title=ip,
         description=serverdescription,
         footer=embedfooter,
         author=indexautherfield,
-        fields=[serverversionfield, playersfield]
+        fields=[serverversionfield, playersfield],
+        thumbnail = img
     )
 
 @bot.event
@@ -159,22 +180,9 @@ async def server(ctx: interactions.CommandContext,
         datalist.append(c.fetchone())
     c.close()
     if len(datalist)==0:
-        await ctx.send('the search u did did not yield any results ):')
+        await ctx.send('I dont know '+name+' ):')
         return
-
-    button1 = interactions.Button(
-        label = '<<',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'previousserver'
-    )
-
-    button2 = interactions.Button(
-        label = '>>',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'nextserver'
-    )
-
-    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
+    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
 
 @bot.command(
     name='server',
@@ -270,19 +278,7 @@ async def server(ctx: interactions.CommandContext,
         await ctx.send('the search u did did not yield any results ):')
         return
 
-    button1 = interactions.Button(
-        label = '<<',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'previousserver'
-    )
-
-    button2 = interactions.Button(
-        label = '>>',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'nextserver'
-    )
-
-    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
+    await ctx.send('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
 
 @bot.component('previousserver')
 async def button_response(ctx):
@@ -296,19 +292,7 @@ async def button_response(ctx):
         serverindex+=1
         await ctx.edit('')
         return
-    
-    button1 = interactions.Button(
-        label = '<<',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'previousserver'
-    )
-
-    button2 = interactions.Button(
-        label = '>>',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'nextserver'
-    )
-    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
+    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
 
 @bot.component('nextserver')
 async def button_response(ctx):
@@ -322,17 +306,6 @@ async def button_response(ctx):
         serverindex-=1
         await ctx.edit('')
         return
-    button1 = interactions.Button(
-        label = '<<',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'previousserver'
-    )
-
-    button2 = interactions.Button(
-        label = '>>',
-        style = interactions.ButtonStyle.PRIMARY,
-        custom_id = 'nextserver'
-    )
-    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=[button1, button2])
+    await ctx.edit('', embeds=createServerEmbed(datalist[serverindex], serverindex+1, len(datalist)), components=getComponents())
 
 bot.start()
