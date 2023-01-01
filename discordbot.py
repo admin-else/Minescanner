@@ -1,4 +1,4 @@
-import interactions, sqlite3, datetime, os, pathlib, dotenv
+import interactions, sqlite3, datetime, os, multiprocessing, dotenv, pinger, ipaddress, socket
 
 dotenv.load_dotenv('profile.env')
 
@@ -140,12 +140,59 @@ def createServerEmbed(server, index, lastindex, searchoptions):
 async def on_ready():
     print(f'ready as {bot.me.name}')
 
+@bot.command(name='scan',
+             description='scan a server.',
+             options=[
+                interactions.Option(
+                    name        = 'ip',
+                    type        = interactions.OptionType.STRING,
+                    description = 'The ip of the server u want to scan.',
+                    required    =  True
+                )
+             ])
+async def scan(ctx: interactions.CommandContext,
+               ip):
+    await ctx.defer()
+    try:
+        if ipaddress.ip_address(socket.gethostbyname(ip)).is_private:
+            await ctx.send('I dont like that u tried to snoop in my networt not nice ):')
+            return
+    except:
+        pass
+    try:
+        p = multiprocessing.Process(target=pinger.main, args=(ip,))
+        p.start()
+        p.join(2)
+        p.terminate()
+    except Exception as e:
+        await ctx.send('Ping errored.')
+        print('Tell that admin else guy to fix this error.')
+        print(e)
+        return
+    c = conn.cursor()
+    c.execute('SELECT * FROM ping WHERE ip = ? ORDER BY time DESC', (ip,))
+    datalist[str(ctx.channel_id)] = {}
+    datalist[str(ctx.channel_id)]['servers'] = []
+    datalist[str(ctx.channel_id)]['servers'].append(c.fetchone())
+    datalist[str(ctx.channel_id)]['searchoptions'] = 'Scan of '+ip+'.--'
+    datalist[str(ctx.channel_id)]['count']         =  0 
+    
+    c.close()
+
+    if len(datalist[str(ctx.channel_id)]['servers'])==0 or datalist[str(ctx.channel_id)]['servers'][0]==None:
+        await ctx.send(f'the scan u did to the ip {ip} was unsuccessful ):')
+        return
+
+    await ctx.send('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), datalist[str(ctx.channel_id)]['searchoptions']), components=getComponents())
+
+
+
 @bot.command(name='searchplayer',
              description='Search for player in database.',
              options=[
                 interactions.Option(
-                    name = 'name',
-                    type = interactions.OptionType.STRING,
+                    name        = 'name',
+                    type        = interactions.OptionType.STRING,
                     description = 'The name of the player u want to search for.',
                     required    = True
                 )
@@ -248,9 +295,9 @@ async def server(ctx: interactions.CommandContext,
 
     c.execute(sqlcommand, tuple(sqlarguments))
     global datalist
-    datalist[str(ctx.channel_id)] = {}
-    datalist[str(ctx.channel_id)]['count'] = 0
-    datalist[str(ctx.channel_id)]['servers'] = c.fetchall()
+    datalist[str(ctx.channel_id)]                  = {}
+    datalist[str(ctx.channel_id)]['count']         = 0
+    datalist[str(ctx.channel_id)]['servers']       = c.fetchall()
     datalist[str(ctx.channel_id)]['searchoptions'] = searchoptions
 
     c.close()

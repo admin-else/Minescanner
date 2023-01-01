@@ -43,6 +43,7 @@ def main(address):
     jsonobj["time"]=str(datetime.datetime.now())
     if 'version' in jsonobj and jsonobj['version']['name'] not in garbage:
         dbutils.addPing(jsonobj)
+    return
 
 import sys
 if __name__=='__main__':
