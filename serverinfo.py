@@ -295,7 +295,7 @@ def main(ip):
             jsoninfo['offlineMode']=True
         else:
             jsoninfo['offlineMode']=False
-    print(jsoninfo)
+    return jsoninfo
 
 def getByUUID(list, uuid):
     for item in list:
@@ -304,4 +304,4 @@ def getByUUID(list, uuid):
 
 if __name__ == "__main__":
     import sys
-    main(sys.argv[1])
+    print(main(sys.argv[1]))
