@@ -1,7 +1,7 @@
-import socket, os, concurrent.futures, subprocess, WebsiteScrapers, pinger, multiprocessing, signal, dotenv, time
+import socket, os, concurrent.futures, WebsiteScrapers, pinger, multiprocessing, dotenv, time
 
-def masscan(ipranges):
-    lines = [f'range = {iprange}.0-{iprange}.255\n' for iprange in ipranges]
+def masscan(ips):
+    lines = [f'range = {ip}\n' for ip in ips]
 
     if os.path.exists('./masscan.conf'):
         os.remove('./masscan.conf')
@@ -13,13 +13,13 @@ def masscan(ipranges):
     ips = [
         line.split(' ')[3]
         for line in lines
-        if line.startswith('open tcp 25565 ')
+        if line.startswith('open tcp')
     ]
     return ips
 
-def try2ping(ip):
+def try2ping(ip, port = 25565):
     try:
-        p = multiprocessing.Process(target=pinger.main, args=(ip,))
+        p = multiprocessing.Process(target=pinger.main, args=(ip, port))
         p.start()
         p.join(2)
         if p.is_alive:
@@ -27,7 +27,18 @@ def try2ping(ip):
     except Exception as e:
         print(e)
 
+def try2join(ip, port = 25565):
+    try:
+        p = multiprocessing.Process(target=pinger.main, args=(ip, port))
+        p.start()
+        p.join(5)
+        if p.is_alive:
+            p.terminate()
+    except Exception as e:
+        print(e)
+
 def tcpping(ip):
+    print('Scanning '+ip+'.', end='\r')
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.settimeout(0.05)
     try:
@@ -51,12 +62,12 @@ if __name__=='__main__':
     iprages = []
     print('Done getting all good ping-able domains')
     print('Started pinging',len(addrslist),'ips.')
-    with concurrent.futures.ProcessPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=70) as executor:
         for range in executor.map(tcpping, addrslist):
             if range!=None and range not in iprages:
                 iprages.append(range)
     print('done pinging ips')
-    iplist = masscan(iprages)
+    iplist = masscan([f'{iprange}.0-{iprange}.255' for iprange in iprages])
     if os.getenv('THREADPINGS') == '0':
         for i, addr in enumerate(iplist):
             try2ping(addr)
@@ -65,5 +76,5 @@ if __name__=='__main__':
         with concurrent.futures.ProcessPoolExecutor() as executor:
             executor.map(try2ping, iplist)
     
-    print(start_time)
+    print('START TIME IN UNIX:'+str(start_time))
 
