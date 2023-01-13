@@ -2,6 +2,25 @@ import requests, dotenv, os
 from bs4 import BeautifulSoup
 import concurrent.futures
 
+def masscan(ips):
+    lines = [f'range = {ip}\n' for ip in ips]
+
+    if os.path.exists('./paused.conf'):
+        os.remove('./paused.conf')
+    if os.path.exists('./masscan.conf'):
+        os.remove('./masscan.conf')
+    
+    with open('./masscan.conf','w') as f:
+        f.writelines(lines)
+    
+    out = os.popen('sudo masscan -c ./masscan.conf -p 25565-25577 --excludefile ./excludefile.txt --interactive --wait=3 --rate {}'.format(os.getenv('MASSCANRATE'))).read().splitlines()
+    out = [line.rstrip()
+           for line in out
+           if line.startswith('Discovered open port')]
+    for server in out:
+        print(server[21:][:5])
+        print(server[34:])
+
 def getSoup(url, timeout=None):
     print (url, end="\r")
     try:
@@ -65,10 +84,10 @@ def getips():
     addrs+=scanWebsite(mcs, lastpage)
     print('Scanned https://minecraftservers.org.')
 
-    print('Stating scanning https://minecraftlist.com')
-    if os.getenv('DEBUG')!='1':
-        addrs+=scanWebsite(mcl, 100)
-    print('Done scanning https://minecraftlist.com')
+    #print('Stating scanning https://minecraftlist.com')
+    #if os.getenv('DEBUG')!='1':
+    #    addrs+=scanWebsite(mcl, 100)
+    #print('Done scanning https://minecraftlist.com')
     
     print('Cutting ips')
     addrs = list(dict.fromkeys(addrs))

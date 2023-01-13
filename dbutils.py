@@ -3,18 +3,6 @@ import re, sqlite3, time
 """
 table make cmd ....
 
-
-   ** PING TABLE **
-          name;   type;             exampel; info
-          time;    INT; 1670072676534401627; unix ns time.time_ns()
-            ip; STRING;             8.8.8.8; The pinged ip
-  protocolvers;    INT;                 760; [Protocol version](https://wiki.vg/Protocol_version_numbers)
-    maxplayers;    INT;                  20; max players
-   description; STRING;         rpg anarchy; VERY striped down string(anti sql and short is good) (:
-   isdescolord;    INT;                   1; is colored (if it contains color: or \u00a7) 1 if it is 0 if not
-       version; STRING;        Paper 1.19.2; Server version string (also striped down)
-      ismodded;    INT;                   0; if server gives forgedata
-
 CREATE TABLE ping(
   time INTEGER,
   ip TEXT,

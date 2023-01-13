@@ -72,6 +72,7 @@ def translate2versionNumber(version):
     for vers in versionregex:
         if vers[0]==version:
             return vers[1]
+    return -1
 
 def getComponents():
     return [
@@ -155,14 +156,14 @@ async def scan(ctx: interactions.CommandContext,
     await ctx.defer()
     try:
         if ipaddress.ip_address(socket.gethostbyname(ip)).is_private:
-            await ctx.send('I dont like that u tried to snoop in my networt not nice ):')
+            await ctx.send('I dont like that u tried to snoop in my network not nice ):')
             return
     except:
         pass
     try:
         p = multiprocessing.Process(target=pinger.main, args=(ip,))
         p.start()
-        p.join(2)
+        p.join(4)
         p.terminate()
     except Exception as e:
         await ctx.send('Ping errored.')
@@ -171,8 +172,8 @@ async def scan(ctx: interactions.CommandContext,
         return
     c = conn.cursor()
     c.execute('SELECT * FROM ping WHERE ip = ? ORDER BY time DESC', (ip,))
-    datalist[str(ctx.channel_id)] = {}
-    datalist[str(ctx.channel_id)]['servers'] = []
+    datalist[str(ctx.channel_id)]                  = {}
+    datalist[str(ctx.channel_id)]['servers']       = []
     datalist[str(ctx.channel_id)]['servers'].append(c.fetchone())
     datalist[str(ctx.channel_id)]['searchoptions'] = 'Scan of '+ip+'.--'
     datalist[str(ctx.channel_id)]['count']         =  0 
@@ -200,7 +201,9 @@ async def scan(ctx: interactions.CommandContext,
 async def searchplayer(ctx: interactions.CommandContext,
                  name: str = None):
     global datalist
-    datalist[str(ctx.channel_id)]['searchoptions'] = 'Servers where '+name+' is on--'
+    datalist[str(ctx.channel_id)]            = {}
+    datalist[str(ctx.channel_id)]['servers'] = []
+    datalist[str(ctx.channel_id)]['count']   = 0
 
     c = conn.cursor()
     c.execute('SELECT pingid FROM pingplayers WHERE name = ?', (name,))
@@ -211,7 +214,7 @@ async def searchplayer(ctx: interactions.CommandContext,
     if len(datalist[str(ctx.channel_id)]['servers'])==0:
         await ctx.send('I dont know '+name+' ):')
         return
-    await ctx.send('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers'])), components=getComponents())
+    await ctx.send('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), 'Servers where '+name+' is on--'), components=getComponents())
 
 @bot.command(
     name='server',
@@ -309,13 +312,14 @@ async def server(ctx: interactions.CommandContext,
     await ctx.send('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), datalist[str(ctx.channel_id)]['searchoptions']), components=getComponents())
 
 @bot.component('previousserver')
-async def button_response(ctx):
+async def button_response(ctx: interactions.ComponentContext):
+    ctx.defer()
     global datalist
     if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
         await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
         return
     datalist[str(ctx.channel_id)]['count']-=1
-    if datalist[str(ctx.channel_id)]['count']>=len(datalist[str(ctx.channel_id)]['servers']):
+    if datalist[str(ctx.channel_id)]['count']<=1:
         datalist[str(ctx.channel_id)]['count']+=1
         await ctx.edit('')
         return
@@ -324,15 +328,42 @@ async def button_response(ctx):
 
 @bot.component('nextserver')
 async def button_response(ctx):
+    ctx.defer()
     global datalist
     if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
         await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
         return
     datalist[str(ctx.channel_id)]['count']+=1
     if datalist[str(ctx.channel_id)]['count']>=len(datalist[str(ctx.channel_id)]['servers']):
-        datalist[str(ctx.channel_id)]['count']-=1
+        datalist[str(ctx.channel_id)]['count']=len(datalist[str(ctx.channel_id)]['servers'])
         await ctx.edit('')
         return
     await ctx.edit('', embeds=createServerEmbed(datalist[str(ctx.channel_id)]['servers'][datalist[str(ctx.channel_id)]['count']], datalist[str(ctx.channel_id)]['count']+1, len(datalist[str(ctx.channel_id)]['servers']), datalist[str(ctx.channel_id)]['searchoptions']), components=getComponents())
 
+@bot.command(name='asfile',
+             description='Upload all selected ips to the null pointer.')
+async def asfile(ctx):
+    await ctx.defer()
+    global datalist
+    if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
+        await ctx.send('I dont have any servers selected do /server', embeds=None, components=[])
+        return
+    if len(datalist[str(ctx.channel_id)]['servers']) == 1:
+        await ctx.send('Cmon man u really need to upload 1 ip?')
+        await ctx.send('I can tell u here rn the ip is {}.'.format(datalist[str(ctx.channel_id)]['servers'][0][1]))
+        return
+    filestr = ''
+    servers = []
+    for server in datalist[str(ctx.channel_id)]['servers']:
+        if server[1] not in servers:
+            servers.append(server[1])
+    for server in servers:
+        filestr+=server+'\n'
+    with open('ips.txt', 'w') as f:
+        f.write(filestr)
+    filelink = os.popen(f"curl -F'file=@ips.txt' http://0x0.st", ).read()
+    await ctx.send(f'i uploaded all ips to '+filelink)
+    
 bot.start()
+conn.commit()
+conn.close()

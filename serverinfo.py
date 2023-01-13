@@ -14,7 +14,142 @@ import twisted
 from quarry.net.protocol import Factory, Protocol, ProtocolError, \
     protocol_modes_inv
 jsoninfo = {}
+
+
+defaultcommads = ['advancement',
+'attribute',
+'ban',
+'ban-ip',
+'banlist',
+'bossbar',
+'clear',
+'clone',
+'data',
+'datapack',
+'debug',
+'defaultgamemode',
+'deop',
+'difficulty',
+'effect',
+'enchant',
+'execute',
+'experience',
+'fill',
+'forceload',
+'function',
+'gamemode',
+'gamerule',
+'give',
+'help',
+'item',
+'jfr',
+'kick',
+'kill',
+'list',
+'locate',
+'loot',
+'me',
+'msg',
+'op',
+'pardon',
+'pardon-ip',
+'particle',
+'perf',
+'place',
+'playsound',
+'recipe',
+'reload',
+'save-all',
+'save-off',
+'save-on',
+'say',
+'schedule',
+'scoreboard',
+'seed',
+'setblock',
+'setidletimeout',
+'setworldspawn',
+'spawnpoint',
+'spectate',
+'spreadplayers',
+'stop',
+'stopsound',
+'summon',
+'tag',
+'team',
+'teammsg',
+'teleport',
+'tell',
+'tellraw',
+'time',
+'title',
+'tm',
+'tp',
+'trigger',
+'w',
+'weather',
+'whitelist',
+'worldborder',
+'xp']
+
+command_propertie_id_regex = [
+    (0, 'brigadier:bool'),
+    (1, 'brigadier:float'),
+    (2, 'brigadier:double'),
+    (3, 'brigadier:integer'),
+    (4, 'brigadier:long'),
+    (5, 'brigadier:string'),
+    (6, 'minecraft:entity'),
+    (7, 'minecraft:game_profile'),
+    (8, 'minecraft:block_pos'),
+    (9, 'minecraft:column_pos'),
+    (10, 'minecraft:vec3'),
+    (11, 'minecraft:vec2'),
+    (12, 'minecraft:block_state'),
+    (13, 'minecraft:block_predicate'),
+    (14, 'minecraft:item_stack'),
+    (15, 'minecraft:item_predicate'),
+    (16, 'minecraft:color'),
+    (17, 'minecraft:component'),
+    (18, 'minecraft:message'),
+    (19, 'minecraft:nbt'),
+    (20, 'minecraft:nbt_tag'),
+    (21, 'minecraft:nbt_path'),
+    (22, 'minecraft:objective'),
+    (23, 'minecraft:objective_criteria'),
+    (24, 'minecraft:operation'),
+    (25, 'minecraft:particle'),
+    (26, 'minecraft:angle'),
+    (27, 'minecraft:rotation'),
+    (28, 'minecraft:scoreboard_slot'),
+    (29, 'minecraft:score_holder'),
+    (30, 'minecraft:swizzle'),
+    (31, 'minecraft:team'),
+    (32, 'minecraft:item_slot'),
+    (33, 'minecraft:resource_location'),
+    (34, 'minecraft:mob_effect'),
+    (35, 'minecraft:function'),
+    (36, 'minecraft:entity_anchor'),
+    (-1, 'minecraft:range'),
+    (37, 'minecraft:int_range'),
+    (38, 'minecraft:float_range'),
+    (39, 'minecraft:item_enchantment'),
+    (40, 'minecraft:entity_summon'),
+    (41, 'minecraft:dimension'),
+    (-1, 'minecraft:nbt_compound_tag'),
+    (42, 'minecraft:time'),
+    (43, 'minecraft:resource_or_tag'),
+    (44, 'minecraft:resource'),
+    (45, ' 	(added in 1.19) Template mirror'),
+    (46, ' 	(added in 1.19) Template rotation'),
+    (47, 'minecraft:uuid'),
+]
+
 class ServerInfoProtocol(SpawningClientProtocol):
+
+    def packet_login_encryption_request(self, buff):
+        jsoninfo['offlineMode']=False
+        super().packet_login_encryption_request(buff)
 
     def switch_protocol_mode(self, mode):
         self.check_protocol_mode_switch(mode)
@@ -121,37 +256,16 @@ class ServerInfoProtocol(SpawningClientProtocol):
                             key_bytes = buff.read(key_length)
                             signature_length = buff.unpack_varint()
                             signature = buff.read(signature_length)
-
-                    self.players[p_uuid] = {
+                    data = {
+                        'uuid': p_uuid,
                         'name': p_player_name,
                         'properties': p_properties,
                         'gamemode': p_gamemode,
                         'ping': p_ping,
                         'display_name': p_display_name
                     }
-
-                elif p_action == 1:  # UPDATE_GAMEMODE
-                    p_gamemode = buff.unpack_varint()
-
-                    if p_uuid in self.players:
-                        self.players[p_uuid]['gamemode'] = p_gamemode
-                elif p_action == 2:  # UPDATE_LATENCY
-                    p_ping = buff.unpack_varint()
-
-                    if p_uuid in self.players:
-                        self.players[p_uuid]['ping'] = p_ping
-                elif p_action == 3:  # UPDATE_DISPLAY_NAME
-                    p_has_display_name = buff.unpack('?')
-                    if p_has_display_name:
-                        p_display_name = buff.unpack_chat()
-                    else:
-                        p_display_name = None
-
-                    if p_uuid in self.players:
-                        self.players[p_uuid]['display_name'] = p_display_name
-                elif p_action == 4:  # REMOVE_PLAYER
-                    if p_uuid in self.players:
-                        del self.players[p_uuid]
+                    if data not in self.players:
+                        self.players.append(data)
         # 1.19.x
         elif self.protocol_version <= 761:
             p_action = buff.unpack_varint()
@@ -208,16 +322,6 @@ class ServerInfoProtocol(SpawningClientProtocol):
                     }
                     if data not in self.players:
                         self.players.append(data)
-                elif p_action == 2:  # UPDATE_LATENCY
-                    p_ping = buff.unpack_varint()
-                    getByUUID(self.players, p_uuid)['ping'] = p_ping
-                elif p_action == 3:  # UPDATE_DISPLAY_NAME
-                    p_has_display_name = buff.unpack('?')
-                    if p_has_display_name:
-                        p_display_name = str(buff.unpack_chat())
-                    else:
-                        p_display_name = None
-                        getByUUID(self.players, p_uuid)['display_name'] = p_display_name
 
     def packet_join_game(self, buff):
         buff.unpack('i') # eid
@@ -265,42 +369,73 @@ class ServerInfoProtocol(SpawningClientProtocol):
         except twisted.internet.error.ReactorNotRunning:
             pass
 
-
+    def packet_declare_commands(self, buff):
+        global jsoninfo
+        jsoninfo['commands'] = ''
+        count = buff.unpack_varint()
+        for i in range(count):
+            flag = buff.unpack('b')
+            node_type = flag & 0x03
+            childcount = buff.unpack_varint()
+            clildrenids = []
+            redirect_node = None
+            name = None
+            suggestion_type = None
+            parser_id = None
+            for _ in range(childcount):
+                clildrenids.append(buff.unpack_varint())
+            if flag & 0x08 != 0:
+                redirect_node = buff.unpack_varint()
+            if node_type == 1 or node_type == 2:
+                name = buff.unpack_string()
+            if node_type == 2:
+                argument_type_id = -1
+                if self.protocol_version <= 758:
+                    argument_type_mc_name = buff.unpack_string()
+                    for i, arg_type in enumerate(command_propertie_id_regex):
+                        if arg_type[1] == argument_type_mc_name:
+                            argument_type_id = i
+                else:
+                    argument_type_mc_id = buff.unpack('i')
+                    for i, arg_type in enumerate(command_propertie_id_regex):
+                        if arg_type[1] == argument_type_mc_id:
+                            argument_type_id =  i
+                # TODO DO STUFF (MAKE prpeties parser reader)
+                return
+            if flag & 0x10 != 0:
+                suggestion_type = buff.unpack_string()
+            if name != None and '§' not in name and name not in defaultcommads and 'minecraft:' not in name:
+                jsoninfo['commands']+='§'+name
+            
+            
+        rootindex = buff.unpack_varint()
 
 class ChatLoggerFactory(ClientFactory):
     protocol = ServerInfoProtocol
 
 
 @defer.inlineCallbacks
-def run(ip):                            
+def run(ip, port):
     profile = yield Profile.from_token('',os.getenv('MC_TOKEN'),os.getenv('MC_NAME'),os.getenv('MC_UUID')) # U wont get my accses token (;
 
     # Create factory
     factory = ChatLoggerFactory(profile)
 
     # Connect!
-    factory.connect(ip, 25565)
+    factory.connect(ip, port)
 
 
-def main(ip):
+def main(ip, port = 25565):
     dotenv.load_dotenv('profile.env')
+    global jsoninfo
+    jsoninfo = {}
+    jsoninfo['offlineMode']=True
     try:
-        run(ip)
+        run(ip, port)
         reactor.run()
     except Exception as e:
         print(e)
-    if 'tablist' in jsoninfo and len(jsoninfo['tablist'])!=0:
-        aPlayer = jsoninfo['tablist'][0]
-        if aPlayer['uuid']==str(uuid.from_offline_player(aPlayer['name'])):
-            jsoninfo['offlineMode']=True
-        else:
-            jsoninfo['offlineMode']=False
     return jsoninfo
-
-def getByUUID(list, uuid):
-    for item in list:
-        if item['uuid']==uuid:
-            return item
 
 if __name__ == "__main__":
     import sys
