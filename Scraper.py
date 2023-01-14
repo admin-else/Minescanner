@@ -1,4 +1,5 @@
-import socket, os, concurrent.futures, WebsiteScrapers, pinger, multiprocessing, dotenv, time
+import socket, os, concurrent.futures, WebsiteScrapers, pinger, multiprocessing, dotenv, time, dbutils
+from util import log
 
 def masscan(ips):
     lines = [f'range = {ip}\n' for ip in ips]
@@ -19,7 +20,7 @@ def masscan(ips):
 
 def try2ping(ip, port = 25565):
     try:
-        p = multiprocessing.Process(target=pinger.main, args=(ip, port))
+        p = multiprocessing.Process(target=try2pingandsave, args=(ip, port))
         p.start()
         p.join(2)
         if p.is_alive:
@@ -27,6 +28,15 @@ def try2ping(ip, port = 25565):
     except Exception as e:
         print(e)
 
+def try2pingandsave(ip, port = 25565):
+    ping = pinger.main(ip, port)
+    if dbutils.addPing(ip, port, time.time_ns(), ping):
+        log(f'§aSuccessful ping on {ip}:{port}', 1)
+        log(f'§5 MOTD: {ping['']}', 3)
+    else:
+        log(f'§cunSuccessful ping on {ip}:{port}', 2)
+
+    
 def try2join(ip, port = 25565):
     try:
         p = multiprocessing.Process(target=pinger.main, args=(ip, port))
