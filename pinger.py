@@ -1,6 +1,5 @@
 from twisted.internet import reactor
 from quarry.net.client import ClientFactory, ClientProtocol
-import dbutils
 garbage, jsonobj = ['TCPShield.com', 'COSMIC GUARD'], {}
 class PingProtocol(ClientProtocol):
     def status_response(self, data):    

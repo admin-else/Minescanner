@@ -15,7 +15,12 @@ from quarry.net.protocol import Factory, Protocol, ProtocolError, \
     protocol_modes_inv
 jsoninfo = {}
 
-
+gaymoderegex = {
+    0: "Survival", 
+    1: "Creative", 
+    2: "Adventure", 
+    3: "Spectator"
+}
 defaultcommads = ['advancement',
 'attribute',
 'ban',
@@ -313,7 +318,7 @@ class ServerInfoProtocol(SpawningClientProtocol):
                         'uuid': p_uuid,
                         'name': p_player_name,
                         'properties': p_properties,
-                        'gamemode': p_gamemode,
+                        'gamemode': gaymoderegex.get(p_gamemode, 69420),
                         'ping': p_ping,
                         'display_name': p_display_name,
                         'timestamp': p_sig_timestamp,

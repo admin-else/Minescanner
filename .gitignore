@@ -1,4 +1,5 @@
 __pycache__/
+.vscode/
 test.py
 test2.py
 ips.txt

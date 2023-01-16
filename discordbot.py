@@ -331,7 +331,7 @@ async def button_response(ctx):
     ctx.defer()
     global datalist
     if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
-        await ctx.edit('I dont have any servers selected do /server', embeds=None, components=[])
+        await ctx.edit("I don't have any servers selected do /server", embeds=None, components=[])
         return
     datalist[str(ctx.channel_id)]['count']+=1
     if datalist[str(ctx.channel_id)]['count']>=len(datalist[str(ctx.channel_id)]['servers']):
@@ -346,7 +346,8 @@ async def asfile(ctx):
     await ctx.defer()
     global datalist
     if str(ctx.channel_id) not in datalist or len(datalist[str(ctx.channel_id)])==0:
-        await ctx.send('I dont have any servers selected do /server', embeds=None, components=[])
+        await ctx.send("I don't have any servers selected do /server", embeds=None, components=[])
+        # proper grammar
         return
     if len(datalist[str(ctx.channel_id)]['servers']) == 1:
         await ctx.send('Cmon man u really need to upload 1 ip?')
