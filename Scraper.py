@@ -149,18 +149,18 @@ except Exception as e:
     exit()
 
 iprages = []
-print('Done getting all good ping-able domains')
-print('Started pinging',len(addrslist),'ips.')
+log('§aDone getting all good ping-able domains', 0)
+log(f'§aStarted pinging {len(addrslist)} ips.', 0)
 with concurrent.futures.ProcessPoolExecutor(max_workers=70) as executor:
     for range in executor.map(tcpping, addrslist):
         if range!=None and range not in iprages:
             iprages.append(range)
-print('done pinging ips')
+log('§adone pinging ips', 0)
 iplist = masscan([f'{iprange}.0-{iprange}.255' for iprange in iprages])
 if os.getenv('THREADPINGS') == '0':
     for i, addr in enumerate(iplist):
         try2ping(addr)
-        print(f' {i} / {len(iplist)} - {100*i/len(iplist)}% - {addr}')
+        log(f'§b {i} / {len(iplist)} - {100*i/len(iplist)}% - {addr}', 2)
 else:
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(try2ping, iplist)
@@ -168,5 +168,5 @@ else:
 conn.close()
 
     
-print('START TIME IN UNIX:'+str(start_time))
+log('§aSTART TIME IN UNIX:'+str(start_time), 0)
 
