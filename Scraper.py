@@ -127,8 +127,8 @@ def tcpping(ip):
         port = 25565
         if ':' in ip:
             ip, port = str(ip).split(':',maxsplit=2)
-        ip = socket.gethostbyname(ip)
         if client.connect_ex((ip, int(port))) == 0:
+            ip = socket.gethostbyname(ip)
             log(f'§aSuccsesfuly TCPpinged §b{ip}:{port}§a.', 1)
             return ".".join(str(ip).split(".")[:3])
         else:
@@ -136,7 +136,6 @@ def tcpping(ip):
     except Exception as e:
         log(f'§cTCPping erroed of ip §b{ip}§c with:',2)
         log(str(e), 2)
-
 
 dotenv.load_dotenv('profile.env')
 
@@ -151,16 +150,22 @@ except Exception as e:
 iprages = []
 log('§aDone getting all good ping-able domains', 0)
 log(f'§aStarted pinging {len(addrslist)} ips.', 0)
-with concurrent.futures.ProcessPoolExecutor(max_workers=70) as executor:
-    for range in executor.map(tcpping, addrslist):
-        if range!=None and range not in iprages:
-            iprages.append(range)
+if os.getenv('THREADTCPINGS') == '0':
+    for i, addr in enumerate(addrslist):
+        tcpping(addr)
+        log(f'§b {i} / {len(addrslist)} - {100*i/len(addrslist)}% - {addr}', 1)
+else:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
+        for range in executor.map(tcpping, addrslist):
+            if range!=None and range not in iprages:
+                iprages.append(range)
+                
 log('§adone pinging ips', 0)
 iplist = masscan([f'{iprange}.0-{iprange}.255' for iprange in iprages])
 if os.getenv('THREADPINGS') == '0':
     for i, addr in enumerate(iplist):
         try2ping(addr)
-        log(f'§b {i} / {len(iplist)} - {100*i/len(iplist)}% - {addr}', 2)
+        log(f'§b {i} / {len(iplist)} - {100*i/len(iplist)}% - {addr}', 1)
 else:
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(try2ping, iplist)
