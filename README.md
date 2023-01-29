@@ -1,32 +1,17 @@
-# Minescaner
-Python Minecraft Scanning Tool
+# Minescanner
 
-## HELP
+Minecanner is a python minecraft scaning programm for minecraft server (who would have thought).
 
-Can someone help me with rsa encryption. 
-(the public key (PEM-ENCODED) to the X.509 encoded.)
+Its capeabel of:
 
-i dont know encryption.
+- Scanning server advertising sites
 
-## DB STRUTURE
+- generating good ranges
 
-time (time.time_ns)
-ip
-port
+- masscanig these
 
-description
-iscolored
-protvers
-verstext
-ismodded
-maxplayers
+- pingin these
 
-kickmsg 
-brand
-difficulty
-gamemode
-hardcore
-hashedSeed
-offlineMode
+- Joining these
 
-hello?
+All data that this proccess colects will be saved into servers.db

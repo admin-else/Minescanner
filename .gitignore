@@ -1,7 +1,12 @@
 __pycache__/
+favicons/
 .vscode/
-test.py
-test2.py
-ips.txt
-paused.conf
-profile.env
+src/test.py
+src/test2.py
+src/test3.py
+src/test4.py
+src/test5.py
+src/paused.conf
+src/profile.env
+src/servers.db
+src/servers1.db
