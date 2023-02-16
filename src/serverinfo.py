@@ -1,9 +1,17 @@
+# Dev
+
+import quarry.types.buffer
+
+# Official
 from twisted.internet import reactor, defer
 from quarry.types.uuid import UUID as uuid
+from util import log
 from quarry.net.client import ClientFactory, SpawningClientProtocol
 from quarry.net.auth import ProfileCLI
-from quarry.net.auth import Profile
+from quarry.net.auth import Profile, OfflineProfile
 from quarry.types.buffer import BufferUnderrun
+from twisted.internet.error import DNSLookupError
+from pprint import pprint
 import time, quarry, dotenv, os, twisted
 from quarry.net.protocol import Factory, Protocol, ProtocolError, \
     protocol_modes_inv
@@ -358,7 +366,37 @@ class ServerInfoProtocol(SpawningClientProtocol):
         jsoninfo['brand']=brand
 
     # Lolin ended go be canceld
-    def packet_chunk_data(self, buff):
+    def packet_chunk_data(self, buff: quarry.types.buffer.Buffer1_19_1):
+        chunk_x = buff.unpack('i')
+        chunk_z = buff.unpack('i')
+        heightmaps = buff.unpack_nbt()
+        data_buf = quarry.types.buffer.Buffer1_19_1(buff.read(buff.unpack_varint()))
+
+        print('non air blocks: '+str(data_buf.unpack('H')))
+        for _ in range(4096):
+            bpe = data_buf.unpack('B')   # BPE = Bits Per Entry
+            print('bits_per_entry: '+str(bpe))
+            pall_ids = []
+            if bpe == 0: # signifies that the palette contains a single value
+                pall_ids = [data_buf.unpack_varint()]
+            elif bpe <= 4:
+                pall_ids = [data_buf.unpack_varint() for _ in range(data_buf.unpack_varint())]
+            
+            print(pall_ids)
+
+        block_entitys = []
+        for _ in range(buff.unpack_varint()):
+            block_entity = {}
+            xz_packed= buff.unpack('B')
+            block_entity['x'], block_entity['z'] = int(xz_packed / 16), xz_packed % 16
+            block_entity['y'] = buff.unpack('H')
+            block_entity['type'] = buff.unpack_varint()
+            block_entity['data'] = buff.unpack_nbt()
+            block_entitys.append(block_entity)
+        print(block_entitys)
+        buff.discard()
+
+        
         buff.discard()
         jsoninfo['joinTime']=time.time_ns()
         jsoninfo['tablist']=self.players
@@ -415,8 +453,12 @@ class ChatLoggerFactory(ClientFactory):
 
 @defer.inlineCallbacks
 def run(ip, port):
-    profile = yield Profile.from_token('',os.getenv('MC_TOKEN'),os.getenv('MC_NAME'),os.getenv('MC_UUID')) # U wont get my accses token (;
-
+    try:
+        profile = yield Profile.from_token('',os.getenv('MC_TOKEN'),os.getenv('MC_NAME'),os.getenv('MC_UUID')) # U wont get my accses token (;
+    except DNSLookupError:
+        log('§cU are offline i will be loged into offine profile.', 0)
+        profile = yield OfflineProfile(os.getenv('MC_NAME'))
+        
     # Create factory
     factory = ChatLoggerFactory(profile)
 
@@ -440,5 +482,5 @@ def main(ip, port = 25565):
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv)==1:
-        print(main(sys.argv[1]))
+    if len(sys.argv)==2:
+        pprint(main(sys.argv[1]))

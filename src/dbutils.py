@@ -1,4 +1,44 @@
-import sqlite3
+import sqlite3, dbutils, time, os
+from util import log
+from mcstatus import JavaServer
+
+def doPing(ip, port = 25565):
+    serv = JavaServer(ip, port=port)
+    ping = {}
+    ping['ip'] = ip+':'+str(port)
+    ping['time'] = time.time_ns()
+    ping['plugins'] = None
+    try:
+        ping.update(serv.status().raw)
+        compressed_plugins = ''
+        for pl in serv.query().software.plugins:
+            compressed_plugins+='§'+pl
+        ping['plugins'] = compressed_plugins
+    except ConnectionRefusedError or BrokenPipeError:
+        log('§cServer §b{}§c broke a pipe or did not exsist.'.format(ping['ip']), 2)
+        return
+    return ping
+
+def try2pingandsave(c, ip, port = 25565):
+    try:
+        ping = doPing(ip, port=port)
+        if ping==None:
+            updateUpToDate(ip, c)
+            log('§cServer §b{}§c broke a pipe or did not exsist.'.format(ping['ip']), 2)
+            return
+        if dbutils.isPingVaild(ping) == False:
+            return
+        if 'version' in ping and os.getenv('IGNORE_FAKE_SERVERS')=='1' and ping['version']['name'] in ['TCPShield.com','COSMIC GUARD']:
+            log(f'§cGarbage ping on §b{ip}:{port}§c.', 2)
+            return
+        if dbutils.addPing(ping, c):
+            log(f'§aSuccessful ping on §b{ip}:{port}§a.', 1)
+            log('§5 MOTD: \n§b{}§5 \n Version: §b{}§5 \n (§b{}§5,§b{}§5)'.format(dbutils.parseDesc(ping['description'])[0], ping['version']['name'], ping['players']['online'], ping['players']['max']), 3)
+        else:
+            log(f'§cUnsuccessful ping on §b{ip}:{port}§c.', 2)
+    except Exception as e:
+        log(f'§cPing on §b{ip}:{port}§c errored with:', 2)
+        log(str(e), 2)
 
 def parseDesc(obj):
     if 'text' not in obj:
@@ -12,12 +52,24 @@ def parseDesc(obj):
         isColored = True
     return text, isColored
 
-def addPing(pingdict, c):
+def isPingVaild(pingdict):
+    if pingdict == None:
+        return False
     if 'description' not in pingdict or 'version' not in pingdict:
         return False
     if 'protocol' not in pingdict['version'] or 'name' not in pingdict['version']:
         return False
     if 'online' not in pingdict['players'] or 'max' not in pingdict['players']:
+        return False
+    return True
+
+def updateUpToDate(ip, c):
+    c.execute('''
+    UPDATE ping SET uptodate = 0 WHERE ip = ?
+    ''', (ip, ))
+
+def addPing(pingdict, c):
+    if isPingVaild==False:
         return False
 
     values = [pingdict['ip'], pingdict['time']]
@@ -40,14 +92,12 @@ def addPing(pingdict, c):
     else:
         values.append(0)
     values.append('forgeData' in pingdict or 'modPackData' in pingdict)
+    values.append(pingdict['plugins'])
     values.append(1)
-
+    updateUpToDate(pingdict['ip'], c)
     c.execute('''
-    UPDATE ping SET uptodate = 0 WHERE ip = ?
-    ''', (pingdict['ip'], ))
-    c.execute('''
-    INSERT INTO ping(ip, time, desc, isColored, icon, protvers, verstext, pOn, pMax, chatreportingstatus, ismodded, uptodate)
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO ping(ip, time, desc, isColored, icon, protvers, verstext, pOn, pMax, chatreportingstatus, ismodded, plugins, uptodate)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', tuple(values))
 
     if 'sample' in pingdict['players']:

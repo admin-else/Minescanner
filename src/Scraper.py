@@ -1,4 +1,4 @@
-import socket, os, concurrent.futures, WebsiteScrapers, pinger, multiprocessing, dotenv, time, sqlite3, re, dbutils
+import socket, os, concurrent.futures, WebsiteScrapers, multiprocessing, dotenv, time, sqlite3, re, dbutils
 from util import log
 from ipwhois import IPWhois
 
@@ -25,7 +25,11 @@ def getRangesFromIps(data):
         if isInRange:
             continue
         lookup = IPWhois(ip)
-        lookup_rdap = lookup.lookup_rdap()
+        try:
+            lookup_rdap = lookup.lookup_rdap()
+        except ipwhois.exceptions.HTTPRateLimitError:
+            log('§cIt seems like u have been rate limitied so i gonna wait for a few seconds', 0)
+            time.sleep(int(os.getenv('WHOIS_RATE_LIMIT_TIME')))
         start_adrr = lookup_rdap['network']['start_address']
         end_adrr = lookup_rdap['network']['end_address']
         rangelist.append(iptotuple(start_adrr) + iptotuple(end_adrr))
@@ -55,37 +59,9 @@ def masscan(ips):
 
 def try2ping(ip, port = 25565):
     try:
-        p = multiprocessing.Process(target=try2pingandsave, args=(ip, port))
+        p = multiprocessing.Process(target=dbutils.try2pingandsave, args=(ip, port))
         p.start()
         p.join(2)
-        if p.is_alive:
-            p.terminate()
-    except Exception as e:
-        print(e)
-
-def try2pingandsave(ip, port = 25565):
-    try:
-        ping = pinger.main(ip, port=port)
-        if 'version' in ping and bool(int(os.getenv('IGNORE_FAKE_SERVERS'))) and ping['version']['name'] in ['TCPShield.com','COSMIC GUARD']:
-            log(f'§cGarbage ping on §b{ip}:{port}§c.', 2)
-            return
-        c = conn.cursor()
-        if dbutils.addPing(ping, c):
-            log(f'§aSuccessful ping on §b{ip}:{port}§a.', 1)
-            log('§5 MOTD: §b{}§5 \n Version: §b{}§5 \n (§b{}§5,§b{}§5)'.format(dbutils.parseDesc(ping['description'])[0], ping['version']['name'], ping['players']['online'], ping['players']['max']), 3)
-            conn.commit()
-        else:
-            log(f'§cUnsuccessful ping on §b{ip}:{port}§c.', 2)
-    except Exception as e:
-        log(f'§cPing on §b{ip}:{port}§c errored with:', 2)
-        log(str(e), 2)
-
-    
-def try2join(ip, port = 25565):
-    try:
-        p = multiprocessing.Process(target=pinger.main, args=(ip, port))
-        p.start()
-        p.join(5)
         if p.is_alive:
             p.terminate()
     except Exception as e:
@@ -138,7 +114,7 @@ if __name__=='__main__':
 
     log('§adone pinging ips', 0)
     iplist = masscan(ipranges)
-    """if os.getenv('THREADPINGS') == '0':
+    if os.getenv('THREADPINGS') == '0':
         for i, addr in enumerate(iplist):
             try2ping(addr)
             log(f'§b {i} / {len(iplist)} - {100*i/len(iplist)}% - {addr}', 1)
@@ -146,7 +122,7 @@ if __name__=='__main__':
         with concurrent.futures.ProcessPoolExecutor() as executor:
             executor.map(try2ping, iplist)
 
-    conn.close()"""
+    conn.close()
 
         
     log('§aSTART TIME IN UNIX:'+str(start_time), 0)
