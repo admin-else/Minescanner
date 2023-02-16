@@ -27,13 +27,13 @@ def getRangesFromIps(data):
         lookup = IPWhois(ip)
         try:
             lookup_rdap = lookup.lookup_rdap()
+            start_adrr = lookup_rdap['network']['start_address']
+            end_adrr = lookup_rdap['network']['end_address']
+            rangelist.append(iptotuple(start_adrr) + iptotuple(end_adrr))
+            log(f'§b{round(i/datalen*100, 2)}§a% - §b{i}§a/§b{datalen}§a - §b{start_adrr}§a-§b{end_adrr}§a', 1)
         except ipwhois.exceptions.HTTPRateLimitError:
             log('§cIt seems like u have been rate limitied so i gonna wait for a few seconds', 0)
             time.sleep(int(os.getenv('WHOIS_RATE_LIMIT_TIME')))
-        start_adrr = lookup_rdap['network']['start_address']
-        end_adrr = lookup_rdap['network']['end_address']
-        rangelist.append(iptotuple(start_adrr) + iptotuple(end_adrr))
-        log(f'§b{round(i/datalen*100, 2)}§a% - §b{i}§a/§b{datalen}§a - §b{start_adrr}§a-§b{end_adrr}§a', 1)
     return [f'{p1}.{p2}.{p3}.{p4}-{p5}.{p6}.{p7}.{p8}' for (p1, p2, p3, p4, p5, p6, p7, p8) in rangelist]
 
 def stripString(text):
