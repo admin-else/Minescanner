@@ -1,4 +1,4 @@
-import socket, os, concurrent.futures, WebsiteScrapers, multiprocessing, dotenv, time, sqlite3, re, dbutils
+import socket, os, concurrent.futures, WebsiteScrapers, multiprocessing, dotenv, time, sqlite3, re, dbutils, ipwhois
 from util import log
 from ipwhois import IPWhois
 
