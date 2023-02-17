@@ -27,9 +27,14 @@ def getRangesFromIps(data):
             continue
         lookup = IPWhois(ip)
         try:
-            lookup_rdap = lookup.lookup_rdap()
-            start_adrr = lookup_rdap['network']['start_address']
-            end_adrr = lookup_rdap['network']['end_address']
+            if(os.getenv('LOOKUP_METHOD')=='RDAP'):
+                lookup_rdap = lookup.lookup_rdap()
+                start_adrr = lookup_rdap['network']['start_address']
+                end_adrr = lookup_rdap['network']['end_address']
+            else:
+                lookup_whois = lookup.lookup_whois()
+                start_adrr = lookup_whois['nets'][0]['range'].split(' - ')[0]
+                end_adrr = lookup_whois['nets'][0]['range'].split(' - ')[1]
             rangelist.append(iptotuple(start_adrr) + iptotuple(end_adrr))
             log(f'§b{round(i/datalen*100, 2)}§a% - §b{i}§a/§b{datalen}§a - §b{start_adrr}§a-§b{end_adrr}§a', 1)
         except ipwhois.exceptions.HTTPRateLimitError:
