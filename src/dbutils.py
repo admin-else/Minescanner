@@ -19,9 +19,10 @@ def doPing(ip, port = 25565):
         return
     return ping
 
-def try2pingandsave(c, ip, port = 25565):
+def try2pingandsave(conn, ip, port = 25565):
     try:
         ping = doPing(ip, port=port)
+        c = conn.cursor()
         if ping==None:
             updateUpToDate(ip, c)
             log('§cServer §b{}§c broke a pipe or did not exsist.'.format(ping['ip']), 2)
@@ -36,6 +37,7 @@ def try2pingandsave(c, ip, port = 25565):
             log('§5 MOTD: \n§b{}§5 \n Version: §b{}§5 \n (§b{}§5,§b{}§5)'.format(dbutils.parseDesc(ping['description'])[0], ping['version']['name'], ping['players']['online'], ping['players']['max']), 3)
         else:
             log(f'§cUnsuccessful ping on §b{ip}:{port}§c.', 2)
+        conn.commit()
     except Exception as e:
         log(f'§cPing on §b{ip}:{port}§c errored with:', 2)
         log(str(e), 2)
@@ -107,7 +109,6 @@ def addPing(pingdict, c):
             INSERT INTO pingPlayers(pingid, name, uuid)
             VALUES(?, ?, ?)
             ''', (pingid, player['name'], player['id']))
-    c.close()
     return True
 
 def addJoinScan(pingdata, c=None):

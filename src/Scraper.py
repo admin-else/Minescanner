@@ -3,7 +3,6 @@ from util import log
 from ipwhois import IPWhois
 
 conn = sqlite3.connect('servers.db')
-cursor = conn.cursor()
 
 def iptotuple(ip):
     return tuple([int(v) for v in ip.split('.')])
@@ -52,7 +51,7 @@ def masscan(ips):
         os.remove('./masscan.conf')
     with open('./masscan.conf','w') as f:
         f.writelines(lines)
-    """os.system('sudo masscan -c ./masscan.conf -p 25565 --excludefile ./excludefile.txt --wait=3 --rate {} -oL output.txt'.format(os.getenv('MASSCANRATE')))
+    os.system('sudo masscan -c ./masscan.conf -p 25565 --excludefile ./excludefile.txt --wait=3 --rate {} -oL output.txt'.format(os.getenv('MASSCANRATE')))
     
     with open('output.txt', 'r') as f:
         lines = f.readlines()
@@ -60,12 +59,12 @@ def masscan(ips):
         line.split(' ')[3]
         for line in lines
         if line.startswith('open tcp')
-    ]"""
+    ]
     return ips
 
 def try2ping(ip, port = 25565):
     try:
-        p = multiprocessing.Process(target=dbutils.try2pingandsave, args=(cursor, ip, port))
+        p = multiprocessing.Process(target=dbutils.try2pingandsave, args=(conn, ip, port))
         p.start()
         p.join(2)
         if p.is_alive:
@@ -128,7 +127,7 @@ if __name__=='__main__':
         with concurrent.futures.ProcessPoolExecutor() as executor:
             executor.map(try2ping, iplist)
 
-    conn.close()
+    conn.commit()
 
         
     log('§aSTART TIME IN UNIX:'+str(start_time), 0)
