@@ -3,6 +3,7 @@ from util import log
 from ipwhois import IPWhois
 
 conn = sqlite3.connect('servers.db')
+cursor = conn.cursor()
 
 def iptotuple(ip):
     return tuple([int(v) for v in ip.split('.')])
@@ -59,7 +60,7 @@ def masscan(ips):
 
 def try2ping(ip, port = 25565):
     try:
-        p = multiprocessing.Process(target=dbutils.try2pingandsave, args=(ip, port))
+        p = multiprocessing.Process(target=dbutils.try2pingandsave, args=(cursor, ip, port))
         p.start()
         p.join(2)
         if p.is_alive:
