@@ -8,6 +8,7 @@ def iptotuple(ip):
     return tuple([int(v) for v in ip.split('.')])
 
 def getRangesFromIps(data):
+    asns = []
     rangelist = []
     datalen = len(data)
     for i, ip in enumerate(data):
@@ -33,12 +34,17 @@ def getRangesFromIps(data):
             else:
                 lookup_whois = lookup.lookup_whois()
                 start_adrr = lookup_whois['nets'][0]['range'].split(' - ')[0]
+                asns.append('AS' + lookup_whois['asn'])
                 end_adrr = lookup_whois['nets'][0]['range'].split(' - ')[1]
             rangelist.append(iptotuple(start_adrr) + iptotuple(end_adrr))
             log(f'§b{round(i/datalen*100, 2)}§a% - §b{i}§a/§b{datalen}§a - §b{start_adrr}§a-§b{end_adrr}§a', 1)
         except ipwhois.exceptions.HTTPRateLimitError:
             log('§cIt seems like u have been rate limitied so i gonna wait for a few seconds', 0)
             time.sleep(int(os.getenv('WHOIS_RATE_LIMIT_TIME')))
+    asns = list(dict.fromkeys(asns))
+    with open('asns.txt', 'w') as f:
+        f.write('\n'.join(asns))
+    exit()
     return [f'{p1}.{p2}.{p3}.{p4}-{p5}.{p6}.{p7}.{p8}' for (p1, p2, p3, p4, p5, p6, p7, p8) in rangelist]
 
 def stripString(text):
@@ -103,17 +109,20 @@ if __name__=='__main__':
     ips = []
     log('§aDone getting all good ping-able domains', 0)
     log(f'§aStarted pinging {len(addrslist)} ips.', 0)
-    if os.getenv('THREADTCPINGS') == '0':
-        for i, addr in enumerate(addrslist):
-            ip = tcpping(addr)
-            if ip != None and ip not in ips:
-                ips.append(ip)
-            log(f'§b {i} / {len(addrslist)} - {100*i/len(addrslist)}% - {addr}', 1)
-    else:
-        with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
-            for ip in executor.map(tcpping, addrslist):
-                if ip!=None and ip not in ips:
+    try:
+        if os.getenv('THREADTCPINGS') == '0':
+            for i, addr in enumerate(addrslist):
+                ip = tcpping(addr)
+                if ip != None and ip not in ips:
                     ips.append(ip)
+                log(f'§b {i} / {len(addrslist)} - {100*i/len(addrslist)}% - {addr}', 1)
+        else:
+            with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
+                for ip in executor.map(tcpping, addrslist):
+                    if ip!=None and ip not in ips:
+                        ips.append(ip)
+    except KeyboardInterrupt:
+        pass
 
     ipranges = getRangesFromIps(ips)
 
